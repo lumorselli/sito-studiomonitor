@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="640" height="640">
+  <defs>
+    <mask id="stripe-cut-sq">
+      <rect x="0" y="0" width="640" height="640" fill="#ffffff"></rect>
+      <rect x="0" y="0" width="640" height="150" fill="#000000"></rect>
+      <rect x="0" y="200" width="640" height="16" fill="#000000"></rect>
+      <rect x="0" y="266" width="640" height="16" fill="#000000"></rect>
+      <rect x="0" y="332" width="640" height="16" fill="#000000"></rect>
+      <rect x="0" y="398" width="640" height="16" fill="#000000"></rect>
+      <rect x="0" y="464" width="640" height="16" fill="#000000"></rect>
+      <rect x="0" y="530" width="640" height="110" fill="#000000"></rect>
+    </mask>
+  </defs>
+  <rect x="0" y="0" width="640" height="640" fill="#002935"></rect>
+  <text x="320" y="96" text-anchor="middle" textLength="460" lengthAdjust="spacing" font-family="Helvetica, Arial, sans-serif" font-weight="600" font-size="64" fill="#ffffff">STUDIO</text>
+  <text x="320" y="530" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-weight="900" font-size="530" fill="#ffffff" mask="url(#stripe-cut-sq)">M</text>
+  <rect x="505" y="490" width="90" height="90" fill="#009a9b"></rect>
+</svg>

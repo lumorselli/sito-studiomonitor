@@ -1,0 +1,299 @@
+/* ============================================================
+   Studio Monitor — foglio di stile UNICO del sito.
+   Palette e layout definiti in C0 (v. Piano_Fase4_Sito.md).
+   Ogni pagina del sito richiama questo file: un colore o il
+   menù si cambiano QUI una volta sola.
+   ============================================================ */
+
+:root{
+  --petrolio:#08475E;
+  --teal:#009a9b;
+  --giallo:#F0B429;
+  --grigio-scuro:#37362f;
+  --sfondo-pagina:#f2f1ee;
+  --sfondo-header:#f5f4f0;
+  --bordo-header:#dcdad3;
+  --bordo-chiaro:#d9d7d1;
+  --testo-scuro:#12161a;
+  --testo-medio:#5b5a54;
+  --mono:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --header-h:190px;
+  --sidebar-w:260px;
+  --tslant:4px;   /* inclinazione FISSA dei lati corti dei rettangolini teal */
+}
+*{box-sizing:border-box;}
+html,body{margin:0;}
+/* barra di scorrimento SEMPRE presente: senza, le pagine corte (senza barra) e quelle
+   lunghe (con barra) hanno larghezze diverse e il logo centrato slitta di ~7px */
+html{overflow-y:scroll;}
+body{
+  background:var(--sfondo-pagina);
+  color:var(--testo-scuro);
+  font-family:var(--mono);
+  font-size:16px;
+  line-height:1.65;
+}
+
+/* ===== INTESTAZIONE (sempre presente) ===== */
+.site-header{
+  position:fixed; top:0; left:0; right:0; height:var(--header-h);
+  background:var(--sfondo-header);
+  border-bottom:1px solid var(--bordo-header);
+  z-index:20;
+  display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+  padding-top:34px;
+  gap:5px;
+}
+.logo{display:block; line-height:0;}
+.logo img{height:120px; width:auto; display:block;}
+.header-sub{
+  color:var(--teal);
+  font-size:12.5px; text-transform:uppercase; letter-spacing:.04em; font-weight:600;
+}
+
+/* ===== MENU LATERALE ===== */
+.sidebar{
+  position:fixed; top:0; left:0; width:var(--sidebar-w); height:100vh;
+  background:var(--grigio-scuro);
+  z-index:30;
+  clip-path:polygon(0 0, 100% 72px, 100% 100%, 0 100%);
+}
+.side-border-diag{
+  position:fixed; top:-3px; left:0; width:272px; height:7px;
+  background:linear-gradient(to bottom, var(--petrolio) 0 3px, var(--bordo-chiaro) 3px 7px);
+  transform-origin:0 3px; transform:rotate(15.53deg);
+  z-index:31;
+}
+.side-border-right{
+  position:fixed; top:72px; bottom:0; left:calc(var(--sidebar-w) - 4px); width:7px;
+  background:linear-gradient(to right, var(--bordo-chiaro) 0 4px, var(--petrolio) 4px 7px);
+  z-index:31;
+}
+.nav{margin-top:150px; display:flex; flex-direction:column; padding:0 18px;}
+
+/* ---- Bottoni di PRIMO LIVELLO: Home e pulsante-tendina "Servizi" (stessa dimensione) ---- */
+.nav > a, .nav-toggle{
+  position:relative; display:block; width:100%;
+  background:var(--petrolio); color:#eef1f1; text-decoration:none;
+  font-family:var(--mono);
+  font-weight:700; font-size:15px; line-height:1.2; letter-spacing:.08em; text-transform:uppercase;
+  text-align:left;
+  padding:16px 20px 16px 30px;   /* spazio a sinistra per il rettangolino teal */
+  margin:0 0 12px;               /* distanza FISSA tra i bottoni principali */
+  border:none;
+}
+/* rettangolino teal dei principali: dimensione FISSA, centrato in verticale */
+.nav > a::before, .nav-toggle::before{
+  content:""; position:absolute; left:9px; top:50%; transform:translateY(-50%);
+  width:6px; height:22px;
+  background:var(--teal);
+  clip-path:polygon(0 var(--tslant), 100% 0, 100% calc(100% - var(--tslant)), 0 100%);
+}
+/* all'hover: SCRITTA gialla, niente bordo — ma SOLO dove esiste un puntatore vero.
+   Su touch l'hover resta "appiccicato" dopo il tocco e lascerebbe gialle voci non
+   attive; lì il giallo compare solo mentre si preme (:active, riga sotto). */
+@media (hover:hover){
+  .nav > a:hover, .nav-toggle:hover{ color:var(--giallo); }
+}
+.nav > a:active, .nav-toggle:active{ color:var(--giallo); }
+.nav > a.attivo{ color:var(--giallo); }   /* SOLO la pagina/sottopagina corrente = scritta gialla */
+
+/* Pulsante "Servizi": freccia a destra + poco spazio verso la tendina (Privati gli sta vicino) */
+.nav-toggle{
+  display:flex; align-items:center; justify-content:space-between; cursor:pointer;
+  margin-bottom:7px;
+}
+.caret{
+  display:inline-block; margin-left:10px; flex:0 0 auto;
+  border:5px solid transparent; border-left-color:currentColor;   /* triangolino ▸ */
+  transition:transform .18s ease;
+}
+.nav-toggle[aria-expanded="true"] .caret{transform:rotate(90deg);}   /* ▾ da aperto */
+.nav-toggle.attivo .caret{border-left-color:var(--giallo);}   /* freccia GIALLA quando sei in una sottopagina Servizi (la parola resta normale) */
+
+/* ---- Sottomenù a tendina (Privati / Imprese) ----
+   IN FLUSSO (aprendosi spinge in basso eventuali voci successive).
+   Più corti dei principali: rientrati a SINISTRA, allineati a DESTRA. */
+.submenu{overflow:hidden; max-height:0; transition:max-height .22s ease;}
+.submenu.aperto{max-height:220px;}
+.submenu a{
+  position:relative; display:block;
+  background:var(--petrolio); color:#dfe3e3; text-decoration:none;
+  font-family:var(--mono);
+  font-weight:600; font-size:13px; line-height:1.2; letter-spacing:.06em; text-transform:uppercase;
+  text-align:left;
+  padding:10px 16px 10px 20px;
+  margin:0 0 7px 16px;           /* 16px di rientro a SX; 7px tra Privati e Imprese */
+}
+.submenu a:last-child{margin-bottom:0;}
+@media (hover:hover){ .submenu a:hover{color:var(--giallo);} }
+.submenu a:active{color:var(--giallo);}
+.submenu a.attivo{color:var(--giallo);}   /* pagina corrente = SCRITTA gialla */
+/* barretta teal SEMPRE presente su TUTTE le voci del sottomenù (più piccola dei principali) */
+.submenu a::before{
+  content:""; position:absolute; left:7px; top:50%; transform:translateY(-50%);
+  width:5px; height:15px;
+  background:var(--teal);
+  clip-path:polygon(0 var(--tslant), 100% 0, 100% calc(100% - var(--tslant)), 0 100%);
+}
+.side-copy{
+  position:absolute; left:26px; bottom:24px;
+  color:#6f6e69; font-size:12.5px;
+}
+
+/* ===== BOTTONE CONTATTACI ===== */
+.contatti-btn{
+  position:fixed; top:68px; right:48px;
+  background:var(--petrolio); color:#f7f6f3; text-decoration:none;
+  font-weight:700; font-size:13px; letter-spacing:.06em; text-transform:uppercase;
+  padding:15px 28px; border-radius:2px;
+  z-index:40;
+}
+@media (hover:hover){ .contatti-btn:hover{color:var(--giallo);} }
+.contatti-btn:active{color:var(--giallo);}
+
+/* ===== MENU PER TELEFONO (bottone ☰ + voce Contattaci nel menù) =====
+   Su PC non esistono: il bottone è nascosto e "Contattaci" resta il bottone fisso. */
+.menu-btn{
+  display:none;
+  position:fixed; top:12px; left:12px; width:42px; height:42px;
+  background:var(--petrolio); color:#eef1f1; border:none; border-radius:2px;
+  font-family:var(--mono); font-size:18px; line-height:1; cursor:pointer;
+  z-index:60;
+}
+@media (hover:hover){ .menu-btn:hover{color:var(--giallo);} }
+.menu-btn:active{color:var(--giallo);}
+.nav > a.solo-mobile{display:none;}
+/* "Contattaci" alla stessa distanza degli altri bottoni principali (12px):
+   con la tendina chiusa il bottone Servizi porta già 7px → ne bastano 5;
+   con la tendina aperta l'ultima voce (Imprese) porta 0 → servono tutti e 12 */
+.submenu + a.solo-mobile{margin-top:5px;}
+.submenu.aperto + a.solo-mobile{margin-top:12px;}
+
+/* ===== IMPALCATURA PAGINA + FOOTER ANCORATO IN FONDO =====
+   .page tiene insieme contenuto e footer: con poco contenuto il footer
+   resta appoggiato al fondo della finestra; con tanto, scorre normale. */
+.page{
+  margin-top:var(--header-h);
+  min-height:calc(100vh - var(--header-h));
+  display:flex; flex-direction:column;
+}
+.content{
+  margin-left:var(--sidebar-w);
+  padding:72px 64px 90px;
+  flex:1 0 auto;   /* cresce e spinge il footer in fondo */
+}
+.content-inner{max-width:780px;}
+
+.eyebrow{
+  color:var(--teal); font-size:12.5px; text-transform:uppercase;
+  letter-spacing:.08em; font-weight:700; margin-bottom:14px;
+}
+h1{font-size:27px; font-weight:800; line-height:1.25; margin:0 0 8px; color:var(--petrolio);}
+h2{
+  position:relative; padding-left:18px;
+  font-size:16.5px; font-weight:700; color:var(--petrolio); margin:36px 0 12px;
+}
+h2::before{
+  content:""; position:absolute; left:0; top:2px; bottom:2px; width:6px;
+  background:var(--teal);
+  clip-path:polygon(0 var(--tslant), 100% 0, 100% calc(100% - var(--tslant)), 0 100%);
+}
+p{margin:0 0 14px;}
+ul{margin:0 0 14px; padding-left:22px;}
+li{margin-bottom:7px;}
+a{color:var(--teal);}
+
+/* ===== HOME ===== */
+.home-lead{font-size:17px; color:var(--testo-scuro); margin:14px 0 8px; max-width:680px;}
+
+/* ===== SERVIZI (righe-servizio) ===== */
+.serv-intro{font-size:15.5px; color:var(--testo-medio); margin:0 0 22px; max-width:700px;}
+.servizi-lista{display:flex; flex-direction:column; gap:14px; margin-bottom:44px;}
+.servizio{
+  position:relative; display:block;
+  border:2px solid var(--bordo-chiaro);
+  padding:18px 24px 18px 34px;   /* stesso rientro sinistro per allineare i titoli */
+  text-decoration:none; color:var(--testo-scuro);
+}
+.serv-titolo{font-size:16px; font-weight:800; color:var(--petrolio); margin-bottom:5px;}
+.serv-desc{font-size:14.5px; color:var(--testo-medio); margin:0;}
+/* ATTIVO (es. 730): bianco, bordino teal a sinistra, bordo giallo all'hover, niente manina */
+.servizio.attivo{background:#ffffff; cursor:default;}
+.servizio.attivo::before{
+  content:""; position:absolute; left:12px; top:14px; bottom:14px; width:6px;
+  background:var(--teal);
+  clip-path:polygon(0 var(--tslant), 100% 0, 100% calc(100% - var(--tslant)), 0 100%);
+}
+@media (hover:hover){ .servizio.attivo:hover{border-color:var(--giallo);} }
+.servizio.attivo:active{border-color:var(--giallo);}
+/* DISATTIVATO ("Prossimamente"): grigio, tratteggiato, non cliccabile */
+.servizio.disattivato{background:#e9e8e3; border-style:dashed; border-color:#c9c7bf;}
+.serv-head{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:5px;}
+.servizio.disattivato .serv-titolo{color:var(--testo-medio); font-weight:700; margin-bottom:0;}
+.servizio.disattivato .serv-desc{color:#8a887f;}
+.serv-badge{
+  font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; font-weight:700;
+  color:#8a887f; background:#dedcd4; padding:3px 9px; border-radius:2px; white-space:nowrap;
+}
+
+/* ===== PRIVACY (specifico della pagina informativa) ===== */
+.banner-bozza{
+  background:var(--giallo); color:var(--petrolio);
+  padding:12px 18px; margin-bottom:36px;
+  font-weight:700; font-size:13.5px; letter-spacing:.02em;
+  border:2px solid var(--petrolio); border-radius:2px;
+}
+.rif{color:var(--testo-medio); font-size:13.5px; margin-bottom:34px;}
+.todo{
+  background:#fff6da; border:1px dashed var(--giallo); color:#6b5300;
+  padding:2px 6px; font-size:14px; font-weight:700;
+}
+
+/* ===== PIE DI PAGINA ===== */
+.site-footer{
+  position:relative; flex-shrink:0;
+  background:var(--grigio-scuro); color:#e7e6e2;
+  padding:40px 64px 32px 300px;
+  border-top:4px solid var(--bordo-chiaro);
+  box-shadow:0 -3px 0 0 var(--petrolio);
+}
+.footer-cols{display:flex; gap:64px; flex-wrap:wrap;}
+.footer-cols .lab{
+  color:#87867f; font-size:11px; text-transform:uppercase; letter-spacing:.06em;
+  margin-bottom:6px;
+}
+.footer-cols .val{color:#e7e6e2; font-size:14px; min-height:1.4em;}
+.footer-cols a{color:#e7e6e2; text-decoration:none;}
+@media (hover:hover){ .footer-cols a:hover{color:var(--giallo); text-decoration:underline;} }
+.footer-cols a:active{color:var(--giallo);}
+.footer-bottom{
+  margin-top:32px; padding-top:18px; border-top:1px solid #4a4942;
+  color:#6f6e69; font-size:12px;
+  display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between;
+}
+.footer-bottom a{color:#9a9994; text-decoration:none;}
+@media (hover:hover){ .footer-bottom a:hover{color:var(--giallo); text-decoration:underline;} }
+.footer-bottom a:active{color:var(--giallo);}
+
+/* ===== schermi stretti ===== */
+@media (max-width:820px){
+  /* intestazione compatta: logo ridotto, sottotitolo piccolo */
+  :root{--header-h:112px;}
+  .site-header{padding-top:12px; gap:4px;}
+  .logo img{height:64px;}
+  .header-sub{font-size:10px; line-height:1.3; text-align:center; padding:0 8px;}
+  /* niente menù laterale né cornici: al suo posto il bottone ☰ */
+  .sidebar, .side-border-diag, .side-border-right{display:none;}
+  .menu-btn{display:block;}
+  .content{margin-left:0; padding:32px 24px 60px;}
+  /* "Contattaci" fisso sparisce (si sovrappone al logo): diventa una voce del menù */
+  .contatti-btn{display:none;}
+  .site-footer{padding:36px 24px 28px;}
+  /* menù aperto: STESSA veste del menù PC (largo 260px ≈ 2/3 del telefono, taglio
+     diagonale in alto, cornice a due toni); la pagina resta visibile a destra */
+  body.menu-aperto{overflow:hidden;}
+  body.menu-aperto .sidebar{display:block;}
+  body.menu-aperto .side-border-diag, body.menu-aperto .side-border-right{display:block;}
+  body.menu-aperto .nav > a.solo-mobile{display:block;}
+}

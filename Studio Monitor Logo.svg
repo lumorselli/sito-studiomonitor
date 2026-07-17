@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="160 120 960 258" width="960" height="258">
+
+  <rect x="160" y="120" width="960" height="258" fill="#002935"></rect>
+  <text x="334" y="269" textLength="688" lengthAdjust="spacingAndGlyphs" font-family="Helvetica, Arial, sans-serif" font-weight="900" font-size="150" fill="#f4f9fa">MONITOR</text>
+  <rect x="320" y="150" width="700" height="19.3" fill="#002935"></rect>
+  <rect x="320" y="261.3" width="700" height="16" fill="#002935"></rect>
+  <rect x="320" y="181.3" width="700" height="4" fill="#002935"></rect>
+  <rect x="320" y="197.3" width="700" height="4" fill="#002935"></rect>
+  <rect x="320" y="213.3" width="700" height="4" fill="#002935"></rect>
+  <rect x="320" y="229.3" width="700" height="4" fill="#002935"></rect>
+  <rect x="320" y="245.3" width="700" height="4" fill="#002935"></rect>
+  <rect x="1005" y="250" width="32" height="32" fill="#009a9b"></rect>
+  <text transform="translate(295 288) rotate(-90)" textLength="126" lengthAdjust="spacing" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="600" fill="#f4f9fa">STUDIO</text>
+  <text x="328" y="327" textLength="612" lengthAdjust="spacing" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="600" fill="#f4f9fa">SERVIZI FISCALI E GESTIONALI</text>
+</svg>

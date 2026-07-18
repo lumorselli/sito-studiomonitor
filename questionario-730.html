@@ -19,7 +19,7 @@
     /* I vecchi nomi restano (li usano centinaia di regole qui sotto):
        cambiano solo i colori a cui puntano. */
     --blue:#08475E; --blue-dark:#08475E; --bg:#f2f1ee; --card:#ffffff;
-    --border:#d9d7d1; --io:#e4f2f2; --io-border:#9fd0d0;
+    --border:#d9d7d1; --teal-chiaro:#e4f2f2; --teal-bordo:#9fd0d0;
     --cli:#fdf3dd; --cli-border:#e8c87a; --text:#12161a; --muted:#5b5a54;
   }
   *{box-sizing:border-box;}
@@ -113,7 +113,7 @@
   label.q.sub{margin-left:22px;font-size:12.5px;}
   label.q.sub::before{content:"\21B3";color:var(--muted);margin-right:2px;}
   label.q input{margin-top:2px;}
-  .child{margin-left:6px;border-left:2px solid var(--io-border);padding-left:8px;}
+  .child{margin-left:6px;border-left:2px solid var(--teal-bordo);padding-left:8px;}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;}
   .field{font-size:12.5px;margin:5px 0;}
   .field label{display:block;color:var(--muted);margin-bottom:2px;}
@@ -124,7 +124,7 @@
     border-color:var(--teal);outline:none;box-shadow:inset 3px 0 0 0 var(--teal);
   }
   .hint{font-size:11px;color:var(--muted);margin-top:2px;}
-  .notebox{background:var(--io);border:1px solid var(--io-border);border-radius:2px;padding:8px 10px;font-size:12.3px;color:var(--blue-dark);margin:6px 0;}
+  .notebox{background:var(--teal-chiaro);border:1px solid var(--teal-bordo);border-radius:2px;padding:8px 10px;font-size:12.3px;color:var(--blue-dark);margin:6px 0;}
   .sez-avvisi{background:var(--cli);border:1px solid var(--cli-border);border-radius:2px;padding:8px 10px;font-size:12.3px;color:#8a5a00;margin-top:10px;}
   .sez-avvisi:empty{display:none;}
   .cfwrap{display:flex;gap:4px;flex-wrap:nowrap;}
@@ -140,7 +140,7 @@
   .fam-table th{background:#eceae5;font-weight:600;text-align:left;color:var(--petrolio);}
   .fam-table td.ck{text-align:center;}
   .fam-table td.rowdel{text-align:center;}
-  .btnrow-del{background:#fdeceb;color:#b00020;border:1px solid #f0b8b8;border-radius:2px;width:24px;height:24px;line-height:1;cursor:pointer;font-size:13px;font-family:inherit;}
+  .btnrow-del{background:var(--cli);color:#a15c00;border:1px solid var(--cli-border);border-radius:2px;width:24px;height:24px;line-height:1;cursor:pointer;font-size:13px;font-family:inherit;}
   @media (hover:hover){ .btnrow-del:hover{background:#f8d7d7;} }
   .btnrow-del:active{background:#f8d7d7;}
   @media (max-width:640px){ .btnrow-del{width:32px;height:32px;font-size:15px;} }
@@ -264,14 +264,14 @@
   .tabpanel{display:none;border:1px solid var(--border);border-top:none;border-radius:0 0 2px 2px;background:var(--card);padding:12px 14px;max-height:72vh;overflow:auto;}
   .tabpanel.active{display:block;}
   .item{border-radius:2px;padding:8px 10px;margin-bottom:7px;font-size:12.8px;line-height:1.4;}
-  .item.io{background:var(--io);border:1px solid var(--io-border);}
+  .item.studio{background:var(--teal-chiaro);border:1px solid var(--teal-bordo);}
   .item.cli{background:var(--cli);border:1px solid var(--cli-border);}
   .item .nome{font-weight:600;}
   .item .dove{margin-top:3px;color:var(--blue-dark);}
   .item .dove b{color:var(--blue-dark);}
   .item .nota{margin-top:3px;color:var(--muted);}
   .badge{display:inline-block;font-size:10px;padding:1px 6px;border-radius:2px;margin-left:6px;vertical-align:1px;}
-  .badge.io{background:var(--teal);color:#fff;}
+  .badge.studio{background:var(--teal);color:#fff;}
   .badge.cli{background:#8a5a00;color:#fff;}
   .empty{color:var(--muted);font-style:italic;font-size:12.5px;}
   .count{font-size:11.5px;color:var(--muted);margin-bottom:8px;}
@@ -293,6 +293,9 @@
   @media (hover:hover){ .actions button.primary:hover{color:var(--giallo);border-color:var(--petrolio);} }
   .actions button.primary:active{color:var(--giallo);border-color:var(--petrolio);}
   #invio_status{font-size:12px;margin-top:6px;}
+  #invio_status.err{font-size:14px;font-weight:700;color:#a15c00;background:var(--cli);border:2px solid var(--cli-border);border-radius:2px;padding:10px 12px;margin-top:10px;}
+  #invio_status.ok{color:var(--giallo);font-weight:700;}
+  .req{color:#a15c00;font-weight:700;}
   #print-area{display:none;}
   @media print{
     header, .layout, .q-footer, .q-intro, .torna-btn{display:none !important;}
@@ -300,7 +303,7 @@
     body{background:#fff;display:block;padding-top:0;}
     #print-area{display:block;font-size:12px;color:#000;line-height:1.45;padding:0 4px;}
     .p-head{border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:14px;}
-    .p-head .p-studio{font-size:17px;font-weight:700;}
+    .p-head .p-logo{height:44px;display:block;margin-bottom:4px;}
     .p-head .p-recapiti{font-size:11px;margin-top:2px;}
     .p-title{font-size:14px;font-weight:700;margin:10px 0 2px;}
     .p-sub{font-size:11px;color:#333;margin-bottom:10px;}
@@ -353,7 +356,7 @@
     .fam-table{counter-reset:fam;}
     .fam-table, .fam-table tbody, .fam-table tr{display:block;}
     .fam-table tr:not([data-row]){display:none;}
-    .fam-table tr[data-row]{counter-increment:fam;border:1px solid var(--io-border);border-radius:2px;padding:8px 10px 4px;margin-bottom:10px;background:#fbfdfd;}
+    .fam-table tr[data-row]{counter-increment:fam;border:1px solid var(--teal-bordo);border-radius:2px;padding:8px 10px 4px;margin-bottom:10px;background:#fbfdfd;}
     .fam-table tr[data-row]::before{display:block;font-weight:600;color:var(--blue-dark);font-size:13px;border-bottom:1px solid var(--border);padding-bottom:4px;margin-bottom:6px;}
     #fam1 tr[data-row]::before{content:"Figlio/a " counter(fam);}
     #fam2 tr[data-row]::before{content:"Familiare " counter(fam);}
@@ -377,8 +380,8 @@
 <a class="torna-btn" href="privati.html">&larr; Torna ai servizi</a>
 
 <div class="q-intro">
-  <h1 id="hdr-titolo">Prototipo motore 730 — Fase 3 (v2)</h1>
-  <p>Dichiarazione a spunte, in prima persona. Le sotto-domande compaiono solo quando servono. Genera lista CLIENTE, foglio operativo IO e riepilogo. Nessun dato viene salvato o inviato finché non lo decidi tu con "Invia l'ordine".</p>
+  <h1 id="hdr-titolo">Questionario 730</h1>
+  <p>Compila il questionario seguendo le istruzioni sezione per sezione. Alla fine troverai un riepilogo di quello che hai dichiarato, con l'elenco dei documenti che dovrai fornirmi. Invia l'ordine allo studio e salva il tuo PDF: in base alle tue dichiarazioni inizierò la raccolta dei documenti necessari per la tua pratica.</p>
 </div>
 
 <div class="layout">
@@ -396,7 +399,7 @@
         <li>Alcune risposte fanno comparire domande in più: è normale, servono a preparare bene la tua pratica.</li>
         <li>Non devi fare calcoli né conoscere il fisco: bastano date e codici fiscali dove richiesti, al resto pensa lo studio.</li>
         <li>Se hai un dubbio, spunta la casella e scrivilo nelle note della sezione: meglio una voce in più che una dimenticata.</li>
-        <li>Alla fine stampi o salvi il PDF con l'elenco dei documenti da preparare e invii la compilazione allo studio.</li>
+        <li>Alla fine invii la compilazione allo studio e stampi o salvi il PDF con l'elenco dei documenti da preparare.</li>
       </ul>
     </div>
 
@@ -436,9 +439,10 @@
       <div class="notebox child" data-parent="q_per_conto_altri" style="display:none">
         Da qui in poi rispondi riferendoti alla <b>persona per cui presenti la dichiarazione</b>: i dati, i redditi e le spese sono i suoi.
       </div>
+      <div class="hint">I campi segnati con <span class="req">*</span> sono obbligatori per inviare l'ordine allo studio.</div>
       <div class="grid2">
-        <div class="field"><label>Cognome e nome</label><input type="text" data-field="nome" placeholder="Cognome Nome"></div>
-        <div class="field"><label>Email</label><input type="email" data-field="email"></div>
+        <div class="field"><label>Cognome e nome <span class="req">*</span></label><input type="text" data-field="nome" placeholder="Cognome Nome"></div>
+        <div class="field"><label>Email <span class="req">*</span></label><input type="email" data-field="email"></div>
       </div>
 
       <div class="field">
@@ -456,9 +460,9 @@
       </div>
 
       <div class="field">
-        <label>Numero di telefono</label>
+        <label>Numero di cellulare <span class="req">*</span></label>
         <div class="phone-row">
-          <input class="pref" type="text" data-field="prefisso" value="+39">
+          <input class="pref" type="text" data-field="prefisso" value="+39" readonly tabindex="-1">
           <input type="text" data-field="cell" inputmode="numeric" maxlength="10" placeholder="3331234567">
         </div>
       </div>
@@ -701,16 +705,14 @@
     </div>
 
     <div class="card">
-      <h2>Stampa e invia</h2>
-      <div class="hint" style="margin-bottom:4px">Stampa o salva in PDF una copia dei tuoi dati dichiarati e l'elenco dei documenti che dovrai fornirmi; se hai scelto la consegna digitale, in fondo trovi l'autorizzazione da firmare. Dal telefono usa "Salva come PDF".</div>
+      <h2>Invia e salva</h2>
+      <div class="hint" style="margin-bottom:4px">Quando hai finito, premi il bottone in fondo: la tua compilazione parte verso lo studio e subito dopo si apre la stampa per salvare il tuo PDF, con i dati dichiarati e l'elenco dei documenti che dovrai fornirmi; se hai scelto la consegna digitale, in fondo al PDF trovi l'autorizzazione da firmare. Dal telefono usa "Salva come PDF". <b>Verrai ricontattato al più presto per iniziare la raccolta dei documenti.</b></div>
       <div class="actions">
-        <button type="button" id="btn-print-cliente" class="primary">Stampa / salva il tuo PDF</button>
-        <button type="button" id="btn-print-studio" class="studio-only">Copia studio (con foglio operativo)</button>
+        <button type="button" id="btn-print-studio" class="studio-only">Copia studio (con Doc STUDIO)</button>
       </div>
-      <div class="hint" style="margin-top:14px">Quando hai finito, invia la tua compilazione allo studio: <b>verrai ricontattato al più presto per iniziare la raccolta dei documenti</b>.</div>
       <div class="notebox" style="margin-top:10px">
         <b>Come tratto i tuoi dati (in breve).</b> Mentre compili questo questionario, i dati che inserisci restano solo sul tuo dispositivo, dentro il browser: non vengono salvati da nessuna parte né inviati a nessuno in automatico. Se chiudi o ricarichi la pagina prima di stampare o inviare, i dati si perdono.<br><br>
-        I tuoi dati arrivano allo studio quando premi «Invia l'ordine allo studio»: le risposte vengono trasmesse tramite il servizio <b>Web3Forms</b>, che le inoltra via email allo studio. Da quel momento le utilizzo per preparare la tua dichiarazione 730 sul software del CAF (CGN).<br><br>
+        I tuoi dati arrivano allo studio quando premi «Invia l'ordine e salva il tuo PDF»: le risposte vengono trasmesse tramite il servizio <b>Web3Forms</b>, che le inoltra via email allo studio. Da quel momento le utilizzo per preparare la tua dichiarazione 730 sul software del CAF (CGN).<br><br>
         Il questionario e la dichiarazione possono contenere dati sulla tua salute (spese sanitarie, invalidità): li tratto solo per preparare la tua pratica. Quando ti invio la copia digitale del 730 uso un <b>PDF protetto o un canale sicuro</b>, non un'email in chiaro.<br><br>
         Titolare del trattamento: <b class="cfg-studio"></b>. Per informazioni o per esercitare i tuoi diritti (accesso, rettifica, cancellazione…) scrivimi a <b class="cfg-email"></b>. L'informativa privacy completa ai sensi dell'art. 13 del Regolamento UE 2016/679 (GDPR) te la consegno e la firmi insieme alla firma della dichiarazione 730<span class="cfg-privacy-link-wrap"></span>.
       </div>
@@ -719,7 +721,8 @@
       <input type="checkbox" id="botcheck" name="botcheck" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
       <label class="q"><input type="checkbox" id="consenso_invio"> Autorizzo l'invio delle risposte di questo questionario allo studio, per la preparazione della mia dichiarazione</label>
       <div class="actions">
-        <button type="button" id="btn-invia-ordine" class="primary">Invia l'ordine allo studio</button>
+        <button type="button" id="btn-invia-ordine" class="primary">Invia l'ordine e salva il tuo PDF</button>
+        <button type="button" id="btn-riprova" class="primary" hidden>Riprova invio</button>
       </div>
       <div id="invio_status"></div>
     </div>
@@ -738,8 +741,8 @@
      <div class="docpanel-body">
     <div class="paneltitle cliente-only">I documenti che dovrai preparare (l'elenco si aggiorna mentre compili)</div>
     <div class="tabs studio-only">
-      <button class="active" data-tab="cli">Lista CLIENTE</button>
-      <button data-tab="io">Foglio IO</button>
+      <button class="active" data-tab="cli">Doc CLIENTE</button>
+      <button data-tab="studio">Doc STUDIO</button>
       <button data-tab="riep">Riepilogo</button>
     </div>
 
@@ -749,10 +752,10 @@
       <div id="list-cli"></div>
     </div>
 
-    <div class="tabpanel studio-only" id="tab-io">
-      <button class="copybtn" data-copy="io">Copia testo</button>
-      <div class="count" id="count-io"></div>
-      <div id="list-io"></div>
+    <div class="tabpanel studio-only" id="tab-studio">
+      <button class="copybtn" data-copy="studio">Copia testo</button>
+      <div class="count" id="count-studio"></div>
+      <div id="list-studio"></div>
     </div>
 
     <div class="tabpanel studio-only" id="tab-riep">
@@ -802,7 +805,7 @@ const CONFIG = {
   annoRedditi: 2025
 };
 function applyConfig(){
-  document.getElementById('hdr-titolo').textContent = CONFIG.studio.nome + ' — Questionario 730/' + CONFIG.annoDich;
+  document.getElementById('hdr-titolo').textContent = 'Questionario 730/' + CONFIG.annoDich;
   document.querySelectorAll('.cfg-email').forEach(el=> el.textContent = CONFIG.studio.email);
   document.querySelectorAll('.cfg-studio').forEach(el=> el.textContent = CONFIG.studio.nome);
   document.querySelectorAll('.cfg-recapiti').forEach(el=> el.textContent = CONFIG.studio.recapiti);
@@ -818,19 +821,19 @@ function getConsegna(s){
 }
 
 const MASTER = [
-  {id:'precompilata', giust:"Precompilata (solo confronto)", owner:'IO', dove:'Area riservata AdE (SPID/CIE/CNS) → Servizi → Precompilata → propria precompilata o precompilata in qualità di erede.', always:true},
-  {id:'dich_prec', giust:'Dichiarazione anno precedente', owner:'IO', dove:'AdE → Servizi → Cassetto fiscale → Consultazioni → Dichiarazioni fiscali.', always:true},
-  {id:'cu', giust:'CU - Certificazione Unica', owner:'IO', dove:'AdE → Servizi → Cassetto fiscale → Consultazioni → Dichiarazioni fiscali (CU di tutti gli anni).', always:true},
-  {id:'f24', giust:'F24 (versamenti)', owner:'IO', dove:'AdE → Servizi → Cassetto fiscale → Consultazioni → Versamenti.', always:true},
-  {id:'dati_anagrafici', giust:'Dati anagrafici / domicilio fiscale', owner:'IO', dove:'AdE → Servizi → Cassetto fiscale → Consultazioni → Anagrafica. Il domicilio fiscale si vede anche da "Il tuo profilo".', always:true},
-  {id:'comunicazione_crediti', giust:'Comunicazione AdE maggiori crediti (se presente)', owner:'IO', dove:'AdE → Servizi → Cassetto fiscale → Consultazioni → Dichiarazioni fiscali (segnalazioni di crediti/eccedenze da anni precedenti).', always:true},
-  {id:'sanitarie_ts', giust:'Sanitarie tracciate - prospetto Sistema TS', owner:'IO', dove:'Sistema Tessera Sanitaria → Area riservata → Cittadini → login SPID/CIE/CNS → Consultazione spese sanitarie → anno + "tutti gli erogatori" → Cerca → Scarica tutte le spese (poi convertire in PDF).', always:true},
+  {id:'precompilata', giust:"Precompilata (solo confronto)", owner:'STUDIO', dove:'Area riservata AdE (SPID/CIE/CNS) → Servizi → Precompilata → propria precompilata o precompilata in qualità di erede.', always:true},
+  {id:'dich_prec', giust:'Dichiarazione anno precedente', owner:'STUDIO', dove:'AdE → Servizi → Cassetto fiscale → Consultazioni → Dichiarazioni fiscali.', always:true},
+  {id:'cu', giust:'CU - Certificazione Unica', owner:'STUDIO', dove:'AdE → Servizi → Cassetto fiscale → Consultazioni → Dichiarazioni fiscali (CU di tutti gli anni).', always:true},
+  {id:'f24', giust:'F24 (versamenti)', owner:'STUDIO', dove:'AdE → Servizi → Cassetto fiscale → Consultazioni → Versamenti.', always:true},
+  {id:'dati_anagrafici', giust:'Dati anagrafici / domicilio fiscale', owner:'STUDIO', dove:'AdE → Servizi → Cassetto fiscale → Consultazioni → Anagrafica. Il domicilio fiscale si vede anche da "Il tuo profilo".', always:true},
+  {id:'comunicazione_crediti', giust:'Comunicazione AdE maggiori crediti (se presente)', owner:'STUDIO', dove:'AdE → Servizi → Cassetto fiscale → Consultazioni → Dichiarazioni fiscali (segnalazioni di crediti/eccedenze da anni precedenti).', always:true},
+  {id:'sanitarie_ts', giust:'Sanitarie tracciate - prospetto Sistema TS', owner:'STUDIO', dove:'Sistema Tessera Sanitaria → Area riservata → Cittadini → login SPID/CIE/CNS → Consultazione spese sanitarie → anno + "tutti gli erogatori" → Cerca → Scarica tutte le spese (poi convertire in PDF).', always:true},
 
   {id:'carta_identita', giust:"Carta d'identità (o passaporto)", owner:'CLIENTE', clienteNota:"Documento d'identità in corso di validità: serve per le autocertificazioni.", always:true},
   {id:'tessera_sanitaria', giust:'Tessera sanitaria', owner:'CLIENTE', clienteNota:'Verifica che sia già archiviata; se manca o è scaduta, chiedila.', always:true},
-  {id:'autocert', giust:'Autocertificazione unica', owner:'IO', dove:null, clienteNota:'La preparo io dai dati del foglio conoscitivo: la firmi prima della consegna al CAF. Non serve altro.', always:true},
+  {id:'autocert', giust:'Autocertificazione unica', owner:'STUDIO', dove:null, clienteNota:'La preparo io dai dati del foglio conoscitivo: la firmi prima della consegna al CAF. Non serve altro.', always:true},
 
-  {id:'cambio_residenza', giust:'Cambio di residenza', owner:'IO', dove:'AdE → Servizi → Cassetto fiscale → Consultazioni → Anagrafica: qui compaiono la residenza attuale e la data del cambio. Pagina stampabile/salvabile in PDF, vale come giustificativo.', trigger:s=>chk(s,'q_cambio_residenza_si')},
+  {id:'cambio_residenza', giust:'Cambio di residenza', owner:'STUDIO', dove:'AdE → Servizi → Cassetto fiscale → Consultazioni → Anagrafica: qui compaiono la residenza attuale e la data del cambio. Pagina stampabile/salvabile in PDF, vale come giustificativo.', trigger:s=>chk(s,'q_cambio_residenza_si')},
 
   {id:'dati_familiari', giust:'Dati familiari a carico', owner:'CLIENTE', clienteNota:'Nessun documento da procurare: bastano i dati della tabella. Predisporrò io un\'unica autocertificazione, comprensiva anche dei familiari a carico, che ti farò firmare insieme alla dichiarazione.', trigger:s=>chk(s,'q_coniuge_carico')||chk(s,'q_figli')||chk(s,'q_altri_familiari')},
   {id:'verbale_invalidita', giust:'Verbale invalidità / L.104', owner:'CLIENTE', clienteNota:'Copia del verbale di invalidità civile / Legge 104.', trigger:s=> s.familiari.some(f=>f.disab) || s.familiari2.some(f=>f.disab)},
@@ -848,16 +851,16 @@ const MASTER = [
   {id:'reddito_tassazione_separata', giust:'Altro reddito - Tassazione separata (TFR/arretrati)', owner:'CLIENTE', clienteNota:"Documentazione dell'ente erogatore (TFR, arretrati) se non riportata in CU.", trigger:s=>chk(s,'q_tassazione_separata')},
   {id:'somme_restituite', giust:'Somme restituite al soggetto erogatore', owner:'CLIENTE', clienteNota:'Documentazione delle somme restituite e della tassazione originaria.', trigger:s=>chk(s,'q_somme_restituite')},
 
-  {id:'visura_catastale', giust:'Visura catastale', owner:'IO', dove:'AdE → Servizi → Visure, planimetrie e ispezioni ipotecarie → Propri immobili → Visura per soggetto analitica → Consultazioni personali → Archivio richieste.', trigger:s=>chk(s,'q_terreni')||chk(s,'q_fabbricati')},
+  {id:'visura_catastale', giust:'Visura catastale', owner:'STUDIO', dove:'AdE → Servizi → Visure, planimetrie e ispezioni ipotecarie → Propri immobili → Visura per soggetto analitica → Consultazioni personali → Archivio richieste.', trigger:s=>chk(s,'q_terreni')||chk(s,'q_fabbricati')},
   {id:'rivalutazione_terreno', giust:'Rivalutazione terreno', owner:'CLIENTE', clienteNota:"Perizia giurata di stima e ricevuta del versamento dell'imposta sostitutiva.", trigger:s=>chk(s,'q_rivalutazione_terreno')},
   {id:'rivalutazione_partecipazioni', giust:'Rivalutazione partecipazione societaria', owner:'CLIENTE', clienteNota:"Perizia giurata di stima della partecipazione e ricevuta del versamento dell'imposta sostitutiva.", trigger:s=>chk(s,'q_rivalutazione_partecipazioni')},
-  {id:'atto_notaio', giust:'Atto di compravendita/rogito', owner:'IO*', dove:"Per l'atto completo, se telematico: AdE → Servizi → Visure, planimetrie e ispezioni ipotecarie → Ricerca (sulla riga del proprio CF) → Ricerca sulla provincia → Ricerca sul singolo immobile.", clienteNota:'Te lo chiedo solo se non riesco a scaricarlo (atti più datati, non digitalizzati).', trigger:s=>chk(s,'q_immobile_2025_movimento')},
-  {id:'contratto_locaz_locatore', giust:'Contratto di locazione (locatore)', owner:'IO*', dove:'AdE → Servizi → Cassetto fiscale → Consultazioni → Registro (unica fonte per i contratti di locazione registrati).', clienteNota:'Te ne chiedo copia solo se non riesco a scaricarlo.', trigger:s=>chk(s,'q_fab_affittato')},
-  {id:'contratto_comodato', giust:"Contratto di comodato d'uso registrato", owner:'IO*', dove:'AdE → Servizi → Cassetto fiscale → Consultazioni → Registro (contratti registrati; il comodato registrato compare qui come la locazione).', clienteNota:"Te ne chiedo copia solo se non riesco a scaricarlo. Serve per l'IMU/agevolazione del comodato registrato a figli/genitori.", trigger:s=>chk(s,'q_fab_comodato_registrato')},
+  {id:'atto_notaio', giust:'Atto di compravendita/rogito', owner:'STUDIO*', dove:"Per l'atto completo, se telematico: AdE → Servizi → Visure, planimetrie e ispezioni ipotecarie → Ricerca (sulla riga del proprio CF) → Ricerca sulla provincia → Ricerca sul singolo immobile.", clienteNota:'Te lo chiedo solo se non riesco a scaricarlo (atti più datati, non digitalizzati).', trigger:s=>chk(s,'q_immobile_2025_movimento')},
+  {id:'contratto_locaz_locatore', giust:'Contratto di locazione (locatore)', owner:'STUDIO*', dove:'AdE → Servizi → Cassetto fiscale → Consultazioni → Registro (unica fonte per i contratti di locazione registrati).', clienteNota:'Te ne chiedo copia solo se non riesco a scaricarlo.', trigger:s=>chk(s,'q_fab_affittato')},
+  {id:'contratto_comodato', giust:"Contratto di comodato d'uso registrato", owner:'STUDIO*', dove:'AdE → Servizi → Cassetto fiscale → Consultazioni → Registro (contratti registrati; il comodato registrato compare qui come la locazione).', clienteNota:"Te ne chiedo copia solo se non riesco a scaricarlo. Serve per l'IMU/agevolazione del comodato registrato a figli/genitori.", trigger:s=>chk(s,'q_fab_comodato_registrato')},
   {id:'immobile_da_locare', giust:'Costruzione/acquisto immobile da locare', owner:'CLIENTE', clienteNota:"Fatture di costruzione/acquisto e contratto di locazione dell'immobile.", trigger:s=>chk(s,'q_immobile_da_locare')},
   {id:'iva_classe_energetica', giust:'IVA acquisto abitazione classe A/B', owner:'CLIENTE', clienteNota:"Fattura d'acquisto con IVA evidenziata e attestato di classe energetica.", trigger:s=>chk(s,'q_iva_classe_ab')},
   {id:'patrimonio_estero_immobili', giust:'Immobili/terreni esteri (Quadro W - IVIE)', owner:'CLIENTE', clienteNota:"Atto/documentazione dell'immobile estero e dati per il calcolo dell'IVIE.", trigger:s=>chk(s,'q_immobili_estero')},
-  {id:'plusvalenza_immobiliare', giust:'Plusvalenza immobiliare infraquinquennale', owner:'IO*', dove:'Atti di acquisto e vendita, se telematici: AdE → Servizi → Visure, planimetrie e ispezioni ipotecarie → Ricerca (sulla riga del proprio CF) → Ricerca sulla provincia → Ricerca sul singolo immobile.', clienteNota:"Solo se il notaio NON ha applicato l'imposta sostitutiva del 26% in atto. Servono atto di acquisto + atto di vendita (li recupero io se telematici), fattura del notaio e documenti delle spese incrementative (ristrutturazioni) che riducono la plusvalenza.", trigger:s=>chk(s,'q_venduto_meno5anni')},
+  {id:'plusvalenza_immobiliare', giust:'Plusvalenza immobiliare infraquinquennale', owner:'STUDIO*', dove:'Atti di acquisto e vendita, se telematici: AdE → Servizi → Visure, planimetrie e ispezioni ipotecarie → Ricerca (sulla riga del proprio CF) → Ricerca sulla provincia → Ricerca sul singolo immobile.', clienteNota:"Solo se il notaio NON ha applicato l'imposta sostitutiva del 26% in atto. Servono atto di acquisto + atto di vendita (li recupero io se telematici), fattura del notaio e documenti delle spese incrementative (ristrutturazioni) che riducono la plusvalenza.", trigger:s=>chk(s,'q_venduto_meno5anni')},
 
   {id:'atto_mutuo', giust:'Atto di mutuo', owner:'CLIENTE*', dove:"Per l'atto completo, fallback IO: AdE → Servizi → Visure, planimetrie e ispezioni ipotecarie → Ricerca (sulla riga del proprio CF) → Ricerca sulla provincia → Ricerca sul singolo immobile.", clienteNota:"Se ce l'hai, giramelo tu; altrimenti provo a recuperarlo io.", trigger:s=>chk(s,'q_mutuo_principale')},
   {id:'interessi_mutuo', giust:'Interessi passivi mutuo', owner:'CLIENTE', clienteNota:'Certificato/attestazione degli interessi rilasciato dalla banca (di norma include gli oneri accessori).', trigger:s=>chk(s,'q_mutuo_principale')},
@@ -870,7 +873,7 @@ const MASTER = [
   {id:'asseverazione', giust:'Asseverazione tecnico (sisma/barriere)', owner:'CLIENTE', clienteNota:'Asseverazione del tecnico sulle classi di rischio o sulla conformità.', trigger:s=>chk(s,'q_lavori_agevolati') && (chk(s,'q_tipo_sismabonus')||chk(s,'q_tipo_barriere'))},
   {id:'bonus_mobili', giust:'Bonus mobili (fattura + pagamento)', owner:'CLIENTE', clienteNota:'Fattura mobili/elettrodomestici + prova di pagamento tracciabile.', trigger:s=>chk(s,'q_lavori_agevolati') && chk(s,'q_tipo_bonus_mobili')},
   {id:'parti_comuni', giust:'Parti comuni condominiali', owner:'CLIENTE', clienteNota:"Attestazione dell'amministratore con la tua quota di spesa + copia della delibera assembleare.", trigger:s=>chk(s,'q_lavori_agevolati') && chk(s,'q_lavori_parti_comuni')},
-  {id:'rate_bonus_prec', giust:'Rate bonus anni precedenti', owner:'IO', dove:"Dichiarazione dell'anno precedente → quadro E sez. III/IV: riprendere le rate residue e verificare la continuità (es. immobile venduto → le rate passano di norma all'acquirente).", trigger:s=>chk(s,'q_rate_bonus_precedenti')},
+  {id:'rate_bonus_prec', giust:'Rate bonus anni precedenti', owner:'STUDIO', dove:"Dichiarazione dell'anno precedente → quadro E sez. III/IV: riprendere le rate residue e verificare la continuità (es. immobile venduto → le rate passano di norma all'acquirente).", trigger:s=>chk(s,'q_rate_bonus_precedenti')},
 
   {id:'sanitarie_non_tracciate', giust:'Sanitarie non tracciate', owner:'CLIENTE', clienteNota:'Fatture/ricevute + prova di pagamento tracciabile (contanti ok solo farmacia/prestazioni SSN).', trigger:s=>chk(s,'q_spese_sanitarie')},
   {id:'sanitarie_disabilita', giust:'Sanitarie per disabilità', owner:'CLIENTE', clienteNota:'Fatture o ricevute.', trigger:s=>chk(s,'q_spese_sanitarie_disabilita')},
@@ -885,7 +888,7 @@ const MASTER = [
   {id:'sport_figli', giust:'Attività sportiva figli (5-18)', owner:'CLIENTE', clienteNota:"Ricevuta con dati dell'associazione sportiva + CF di chi pratica e di chi paga.", trigger:s=>chk(s,'q_sport_figli')},
   {id:'corsi_musica', giust:'Corsi di musica figli (5-18)', owner:'CLIENTE', clienteNota:'Ricevute di iscrizione o abbonamento.', trigger:s=>chk(s,'q_corsi_musica')},
   {id:'dsa', giust:'Spese DSA', owner:'CLIENTE', clienteNota:'Fatture degli strumenti/software + certificazione DSA.', trigger:s=>chk(s,'q_dsa')},
-  {id:'contratto_locaz_conduttore', giust:'Contratto di locazione (conduttore)', owner:'IO*', dove:'AdE → Servizi → Cassetto fiscale → Consultazioni → Registro (unica fonte per i contratti di locazione registrati).', clienteNota:'Te ne chiedo copia solo se non riesco a scaricarlo. Nessuna fattura per il canone: solo autocertificazione.', trigger:s=>chk(s,'q_affitto_inquilino')},
+  {id:'contratto_locaz_conduttore', giust:'Contratto di locazione (conduttore)', owner:'STUDIO*', dove:'AdE → Servizi → Cassetto fiscale → Consultazioni → Registro (unica fonte per i contratti di locazione registrati).', clienteNota:'Te ne chiedo copia solo se non riesco a scaricarlo. Nessuna fattura per il canone: solo autocertificazione.', trigger:s=>chk(s,'q_affitto_inquilino')},
   {id:'intermediazione_imm', giust:'Intermediazione immobiliare', owner:'CLIENTE', clienteNota:"Fattura dell'agenzia immobiliare (acquisto prima casa).", trigger:s=>chk(s,'q_intermediazione_immobiliare')},
   {id:'trasporto_pubblico', giust:'Trasporto pubblico', owner:'CLIENTE', clienteNota:'Ricevuta o abbonamento.', trigger:s=>chk(s,'q_trasporto_pubblico')},
   {id:'assicurazioni', giust:'Assicurazioni', owner:'CLIENTE', clienteNota:'Quietanza del premio annuale (vita/infortuni/calamità).', trigger:s=>chk(s,'q_assicurazioni')},
@@ -904,7 +907,7 @@ const MASTER = [
   {id:'colonnina_ricarica', giust:'Colonnina di ricarica veicoli elettrici', owner:'CLIENTE', clienteNota:"Fattura e prova del pagamento tracciabile per l'installazione.", trigger:s=>chk(s,'q_colonnina_ricarica')},
 
   {id:'patrimonio_estero', giust:'Attività finanziarie estere (Quadro W - IVAFE)', owner:'CLIENTE', clienteNota:'Estratti conto/certificazioni di saldo della banca estera; per le cripto, riepilogo exchange.', trigger:s=>chk(s,'q_patrimonio_estero')},
-  {id:'credito_riacquisto', giust:'Credito riacquisto prima casa', owner:'IO*', dove:"Il credito nasce dall'imposta di registro (o IVA) pagata sull'atto della VECCHIA prima casa, utilizzabile fino all'imposta dovuta sul nuovo atto. Si legge nell'atto stesso (non nella fattura del notaio). Se entrambi gli atti sono telematici: AdE → Servizi → Visure, planimetrie e ispezioni ipotecarie → Ricerca (sulla riga del proprio CF) → Ricerca sulla provincia → Ricerca sul singolo immobile.", clienteNota:'Te li chiedo solo se non riesco a recuperarli io: atto di vendita vecchia casa + atto di acquisto nuova casa.', trigger:s=>chk(s,'q_credito_riacquisto_casa')},
+  {id:'credito_riacquisto', giust:'Credito riacquisto prima casa', owner:'STUDIO*', dove:"Il credito nasce dall'imposta di registro (o IVA) pagata sull'atto della VECCHIA prima casa, utilizzabile fino all'imposta dovuta sul nuovo atto. Si legge nell'atto stesso (non nella fattura del notaio). Se entrambi gli atti sono telematici: AdE → Servizi → Visure, planimetrie e ispezioni ipotecarie → Ricerca (sulla riga del proprio CF) → Ricerca sulla provincia → Ricerca sul singolo immobile.", clienteNota:'Te li chiedo solo se non riesco a recuperarli io: atto di vendita vecchia casa + atto di acquisto nuova casa.', trigger:s=>chk(s,'q_credito_riacquisto_casa')},
   {id:'credito_canoni', giust:'Credito canoni non percepiti', owner:'CLIENTE', clienteNota:"Copia dell'intimazione di sfratto/ingiunzione di pagamento (o sentenza di convalida, se già ottenuta).", trigger:s=>chk(s,'q_credito_canoni_non_percepiti')},
   {id:'amministratore_condominio', giust:'Amministratore di condominio (Quadro K)', owner:'CLIENTE', clienteNota:"Elenco fornitori e pagamenti del condominio nell'anno + dati catastali di eventuali interventi sulle parti comuni.", trigger:s=>chk(s,'q_amministratore_condominio')},
   {id:'under36_primacasa', giust:'Credito prima casa under 36', owner:'CLIENTE', clienteNota:'Atto di acquisto (se non lo recupero io) e attestazione ISEE in corso di validità.', trigger:s=>chk(s,'q_under36_primacasa')},
@@ -1014,19 +1017,19 @@ function getState(){
 
 // ---------- rendering liste ----------
 function itemHtml(m, forWho){
-  let html = '<div class="item '+(forWho==='io'?'io':'cli')+'">';
+  let html = '<div class="item '+(forWho==='studio'?'studio':'cli')+'">';
   html += '<div class="nome">'+m.giust;
-  if(forWho==='io'){
-    if(m.owner==='IO/CLIENTE') html += ' <span class="badge io">IO / CLIENTE</span>';
-    else if(m.owner==='IO*') html += ' <span class="badge io">IO (fallback cliente)</span>';
-    else html += ' <span class="badge io">IO</span>';
+  if(forWho==='studio'){
+    if(m.owner==='STUDIO/CLIENTE') html += ' <span class="badge studio">STUDIO / CLIENTE</span>';
+    else if(m.owner==='STUDIO*') html += ' <span class="badge studio">STUDIO (fallback cliente)</span>';
+    else html += ' <span class="badge studio">STUDIO</span>';
   } else {
     if(m.owner==='CLIENTE*') html += ' <span class="badge cli">CLIENTE (fallback IO)</span>';
-    else if(m.owner==='IO*') html += ' <span class="badge cli">solo se non lo trovo io</span>';
-    else if(m.owner==='IO/CLIENTE') html += ' <span class="badge cli">CLIENTE / IO</span>';
+    else if(m.owner==='STUDIO*') html += ' <span class="badge cli">solo se non lo trovo io</span>';
+    else if(m.owner==='STUDIO/CLIENTE') html += ' <span class="badge cli">CLIENTE / STUDIO</span>';
   }
   html += '</div>';
-  if(forWho==='io' && m.dove){
+  if(forWho==='studio' && m.dove){
     html += '<div class="dove"><b>Dove trovarlo:</b> '+m.dove+'</div>';
   }
   if(forWho==='cli' && m.clienteNota){
@@ -1041,12 +1044,12 @@ function render(){
   const s = getState();
   const attivi = MASTER.filter(m=> m.always || (m.trigger && m.trigger(s)));
 
-  const ioItems = attivi.filter(m=> m.owner==='IO' || m.owner==='IO*' || m.owner==='IO/CLIENTE');
-  const cliItems = attivi.filter(m=> m.owner==='CLIENTE' || m.owner==='CLIENTE*' || m.owner==='IO*' || m.owner==='IO/CLIENTE');
+  const studioItems = attivi.filter(m=> m.owner==='STUDIO' || m.owner==='STUDIO*' || m.owner==='STUDIO/CLIENTE');
+  const cliItems = attivi.filter(m=> m.owner==='CLIENTE' || m.owner==='CLIENTE*' || m.owner==='STUDIO*' || m.owner==='STUDIO/CLIENTE');
 
-  document.getElementById('count-io').textContent = ioItems.length+' documenti da recuperare';
+  document.getElementById('count-studio').textContent = studioItems.length+' documenti da recuperare';
   document.getElementById('count-cli').textContent = cliItems.length+(IS_STUDIO?' documenti da chiedere al cliente':' documenti che dovrai preparare');
-  document.getElementById('list-io').innerHTML = ioItems.length? ioItems.map(m=>itemHtml(m,'io')).join('') : '<div class="empty">Nessun documento IO attivo. Spunta le caselle a sinistra.</div>';
+  document.getElementById('list-studio').innerHTML = studioItems.length? studioItems.map(m=>itemHtml(m,'studio')).join('') : '<div class="empty">Nessun documento in Doc STUDIO. Spunta le caselle a sinistra.</div>';
   document.getElementById('list-cli').innerHTML = cliItems.length? cliItems.map(m=>itemHtml(m,'cli')).join('') : '<div class="empty">Nessun documento da chiedere al cliente al momento.</div>';
 
   const a = s.anagrafica;
@@ -1134,8 +1137,8 @@ function render(){
   if(incoerenze.length){
     r += '<br><b>Da verificare:</b><br>'+incoerenze.map(x=>'<span class="warn">⚠ '+x+'</span>').join('<br>')+'<br>';
   }
-  r += '<br><b>Documenti da recuperare IO:</b> '+ioItems.length+'<br>';
-  r += '<b>Documenti da chiedere al CLIENTE:</b> '+cliItems.length+'<br>';
+  r += '<br><b>Doc STUDIO (da recuperare):</b> '+studioItems.length+'<br>';
+  r += '<b>Doc CLIENTE (da chiedere):</b> '+cliItems.length+'<br>';
   const figli = s.familiari.filter(f=>f.nome);
   if(figli.length){
     r += '<br><b>Figli:</b><br>'+figli.map(f=>{
@@ -1215,7 +1218,7 @@ function render(){
     if(el) el.innerHTML = avvisi[k].length ? avvisi[k].map(x=>'⚠ '+x).join('<br>') : '';
   });
 
-  window.__lastState = {s, ioItems, cliItems};
+  window.__lastState = {s, studioItems, cliItems};
 }
 
 function bindCfMini(el){
@@ -1294,8 +1297,8 @@ function syncCF(){
   const st = document.getElementById('cf_status');
   if(!v){ st.textContent = ''; }
   else if(v.length<16){ st.textContent = v.length+'/16 caratteri'; st.style.color = 'var(--muted)'; }
-  else if(cfValido(v)){ st.textContent = '✓ codice fiscale corretto'; st.style.color = '#2e7d32'; }
-  else { st.textContent = '✗ il codice non torna: ricontrolla'; st.style.color = '#b00020'; }
+  else if(cfValido(v)){ st.textContent = '✓ codice fiscale corretto'; st.style.color = 'var(--giallo)'; }
+  else { st.textContent = '✗ il codice non torna: ricontrolla'; st.style.color = '#a15c00'; }
   render();
 }
 cfCells.forEach((c,i)=>{
@@ -1339,8 +1342,8 @@ if(dichCfEl){
     const v = dichCfEl.value;
     if(!v){ st.textContent = ''; }
     else if(v.length<16){ st.textContent = v.length+'/16 caratteri'; st.style.color = 'var(--muted)'; }
-    else if(cfValido(v)){ st.textContent = '✓ codice fiscale corretto'; st.style.color = '#2e7d32'; }
-    else { st.textContent = '✗ il codice non torna: ricontrolla'; st.style.color = '#b00020'; }
+    else if(cfValido(v)){ st.textContent = '✓ codice fiscale corretto'; st.style.color = 'var(--giallo)'; }
+    else { st.textContent = '✗ il codice non torna: ricontrolla'; st.style.color = '#a15c00'; }
   });
 }
 
@@ -1352,8 +1355,8 @@ if(ibanEl){
     const v = ibanEl.value;
     if(!v){ st.textContent = ''; }
     else if(v.length<15){ st.textContent = v.length+' caratteri (un IBAN italiano ne ha 27)'; st.style.color = 'var(--muted)'; }
-    else if(ibanValido(v)){ st.textContent = '✓ IBAN corretto'; st.style.color = '#2e7d32'; }
-    else { st.textContent = '✗ l\'IBAN non torna: ricontrolla carattere per carattere'; st.style.color = '#b00020'; }
+    else if(ibanValido(v)){ st.textContent = '✓ IBAN corretto'; st.style.color = 'var(--giallo)'; }
+    else { st.textContent = '✗ l\'IBAN non torna: ricontrolla carattere per carattere'; st.style.color = '#a15c00'; }
   });
 }
 
@@ -1402,13 +1405,13 @@ function riepToText(){
     .join('\n').trim();
 }
 function plainText(kind){
-  const {ioItems, cliItems, s} = window.__lastState;
-  if(kind==='io'){
-    return 'FOGLIO OPERATIVO - documenti da recuperare (IO)\n\n'+
-      ioItems.map(m=> '- '+m.giust+(m.dove?'\n  Dove trovarlo: '+m.dove:'')).join('\n\n');
+  const {studioItems, cliItems, s} = window.__lastState;
+  if(kind==='studio'){
+    return 'DOC STUDIO - documenti che recupero io\n\n'+
+      studioItems.map(m=> '- '+m.giust+(m.dove?'\n  Dove trovarlo: '+m.dove:'')).join('\n\n');
   }
   if(kind==='cli'){
-    return 'DOCUMENTI DA PORTARE - '+(s.anagrafica.nome||'cliente')+'\n\n'+
+    return 'DOC CLIENTE - documenti che porta '+(s.anagrafica.nome||'il cliente')+'\n\n'+
       cliItems.map(m=> '- '+m.giust+(m.clienteNota?'\n  '+m.clienteNota:'')).join('\n\n');
   }
   return riepToText();
@@ -1430,20 +1433,20 @@ document.querySelectorAll('[data-q], [data-field]').forEach(el=>{
 // ---------- A1: stampa/PDF e invio dell'ordine ----------
 function escapeHtml(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function buildPrintHtml(mode){
-  const {s, ioItems, cliItems} = window.__lastState;
+  const {s, studioItems, cliItems} = window.__lastState;
   const a = s.anagrafica;
   const cons = getConsegna(s);
   const prezzoDig = CONFIG.listino.prezzoBase - CONFIG.listino.scontoDigitale;
   const oggi = new Date().toLocaleDateString('it-IT');
-  let h = '<div class="p-head"><div class="p-studio">'+CONFIG.studio.nome+'</div><div class="p-recapiti">'+CONFIG.studio.recapiti+'</div></div>';
+  let h = '<div class="p-head"><img class="p-logo" src="Studio%20Monitor%20Logo%20Trasparente.svg" alt="'+CONFIG.studio.nome+'"><div class="p-recapiti">'+CONFIG.studio.recapiti+'</div></div>';
   h += '<div class="p-title">Questionario 730/'+CONFIG.annoDich+' (redditi '+CONFIG.annoRedditi+')'+(mode==='studio'?' — COPIA STUDIO':'')+'</div>';
   h += '<div class="p-sub">'+escapeHtml(a.nome||'cliente da indicare')+' — generato il '+oggi+'</div>';
   h += '<div class="p-sez">Riepilogo delle risposte</div><div>'+document.getElementById('list-riep').innerHTML+'</div>';
   h += '<div class="p-sez">Documenti che devi preparare tu ('+cliItems.length+')</div>';
   h += cliItems.map(m=>'<div class="p-item">&#9744; '+m.giust+(m.clienteNota?'<div class="p-nota">'+m.clienteNota+'</div>':'')+'</div>').join('');
   if(mode==='studio'){
-    h += '<div class="p-sez">Foglio operativo — documenti che recupero io ('+ioItems.length+')</div>';
-    h += ioItems.map(m=>'<div class="p-item">&#9744; '+m.giust+(m.dove?'<div class="p-nota">Dove trovarlo: '+m.dove+'</div>':'')+'</div>').join('');
+    h += '<div class="p-sez">Doc STUDIO — documenti che recupero io ('+studioItems.length+')</div>';
+    h += studioItems.map(m=>'<div class="p-item">&#9744; '+m.giust+(m.dove?'<div class="p-nota">Dove trovarlo: '+m.dove+'</div>':'')+'</div>').join('');
   }
   h += '<div class="p-sez">Costo del servizio</div>';
   h += '<div class="p-box">'+(cons.scelta
@@ -1479,33 +1482,49 @@ function orderText(){
   t += SEP+'CONSEGNA E PREZZO'+SEP;
   t += (cons.scelta ? ((cons.digitale?'Solo digitale via email (autorizzazione da firmare)':'Cartacea + digitale')+' - '+cons.prezzo+' EUR') : 'Modalità non ancora scelta')+'\n';
   t += SEP+'RIEPILOGO'+SEP+plainText('riep')+'\n';
-  t += SEP+'DOCUMENTI CHE PORTA IL CLIENTE'+SEP+plainText('cli')+'\n';
-  t += SEP+'FOGLIO OPERATIVO IO'+SEP+plainText('io')+'\n';
+  t += SEP+'DOC CLIENTE'+SEP+plainText('cli')+'\n';
+  t += SEP+'DOC STUDIO'+SEP+plainText('studio')+'\n';
   return t;
 }
 
 // ---------- (rimosso in A2-RIMOZIONE, 12-07-2026) salva/recupera: tornerà nella v2 con login ----------
+// avviso di compilazione (campo mancante o sbagliato): testo ambra, niente parte
+function avvisoInvio(st, msg){ st.className = ''; st.style.color = '#a15c00'; st.textContent = msg; }
+// invio fallito: box giallo ben visibile + bottone "Riprova invio". Il PDF NON si stampa:
+// l'ordine via email è l'unica via, niente ripiego "manda il PDF a mano" (deciso 18-07-2026)
+function erroreInvio(st, dettaglio){
+  st.style.color = ''; st.className = 'err';
+  st.textContent = '✗ Ordine NON inviato ('+dettaglio+'). Il tuo PDF non è stato generato: controlla la connessione e premi «Riprova invio».';
+  document.getElementById('btn-riprova').hidden = false;
+}
 async function sendOrder(){
   const st = document.getElementById('invio_status');
+  document.getElementById('btn-riprova').hidden = true;
+  st.className = '';
   render();
   const {s} = window.__lastState;
   const a = s.anagrafica;
   if(document.getElementById('botcheck').checked){ st.textContent = ''; return; }   // honeypot: solo i bot lo spuntano → scarta in silenzio
-  if(!document.getElementById('consenso_invio').checked){ st.textContent = 'Per inviare spunta prima la casella di autorizzazione all\'invio.'; st.style.color = '#b00020'; return; }
-  if(!(a.nome||'').trim()){ st.textContent = 'Indica cognome e nome nella sezione 1 prima di inviare.'; st.style.color = '#b00020'; return; }
-  if(getConsegna(s).digitale && !(a.email||'').trim()){ st.textContent = 'Hai scelto la consegna digitale: indica la tua email nella sezione 1.'; st.style.color = '#b00020'; return; }
-  if((a.email||'').trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(a.email.trim())){ st.textContent = 'L\'email indicata nella sezione 1 non sembra scritta bene (es. nome@dominio.it): ricontrollala.'; st.style.color = '#b00020'; return; }
-  if(!CONFIG.ordini.web3formsKey){ st.textContent = 'Invio non ancora attivo su questo prototipo: stampa il PDF e portalo o mandalo allo studio.'; st.style.color = '#a15c00'; return; }
+  if(!document.getElementById('consenso_invio').checked){ avvisoInvio(st, 'Per inviare spunta prima la casella di autorizzazione all\'invio.'); return; }
+  if(!(a.nome||'').trim()){ avvisoInvio(st, 'Indica cognome e nome nella sezione 1 prima di inviare.'); return; }
+  if(!(a.email||'').trim()){ avvisoInvio(st, 'Indica la tua email nella sezione 1 prima di inviare.'); return; }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(a.email.trim())){ avvisoInvio(st, 'L\'email indicata nella sezione 1 non sembra scritta bene (es. nome@dominio.it): ricontrollala.'); return; }
+  if(!/^3\d{9}$/.test((a.cell||'').replace(/\s/g,''))){ avvisoInvio(st, 'Indica nella sezione 1 un numero di cellulare italiano valido: 10 cifre che iniziano con 3.'); return; }
+  if(!CONFIG.ordini.web3formsKey){ avvisoInvio(st, 'Invio non ancora attivo su questo prototipo.'); return; }
   st.textContent = 'Invio in corso…'; st.style.color = 'var(--muted)';
   try{
     const resp = await fetch('https://api.web3forms.com/submit', {method:'POST', headers:{'Content-Type':'application/json', Accept:'application/json'},
       body: JSON.stringify({access_key: CONFIG.ordini.web3formsKey, subject: 'Ordine 730/'+CONFIG.annoDich+' - '+a.nome, from_name: a.nome, email: a.email||CONFIG.studio.email, message: orderText()})});
     const data = await resp.json();
-    if(data.success){ st.textContent = '✓ Ordine inviato! Verrai ricontattato al più presto per iniziare la raccolta dei documenti. Salva anche il tuo PDF come promemoria.'; st.style.color = '#2e7d32'; }
-    else{ st.textContent = '✗ Invio non riuscito: '+(data.message||'riprova più tardi')+'. In alternativa stampa il PDF.'; st.style.color = '#b00020'; }
-  }catch(e){ st.textContent = '✗ Invio non riuscito (problema di connessione). Stampa il PDF e mandalo allo studio.'; st.style.color = '#b00020'; }
+    if(data.success){
+      st.style.color = ''; st.className = 'ok';
+      st.textContent = '✓ Ordine inviato! Verrai ricontattato al più presto per iniziare la raccolta dei documenti. Ora si apre la stampa: salva il tuo PDF.';
+      doPrint('cliente');   // solo a invio riuscito: prima l'ordine allo studio, poi il PDF al cliente
+    }
+    else{ erroreInvio(st, data.message||'riprova più tardi'); }
+  }catch(e){ erroreInvio(st, 'problema di connessione'); }
 }
-document.getElementById('btn-print-cliente').addEventListener('click', ()=> doPrint('cliente'));
+document.getElementById('btn-riprova').addEventListener('click', sendOrder);
 document.getElementById('btn-print-studio').addEventListener('click', ()=> doPrint('studio'));
 document.getElementById('btn-invia-ordine').addEventListener('click', sendOrder);
 

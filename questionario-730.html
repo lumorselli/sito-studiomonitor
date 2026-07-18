@@ -296,6 +296,8 @@
   #invio_status.err{font-size:14px;font-weight:700;color:#a15c00;background:var(--cli);border:2px solid var(--cli-border);border-radius:2px;padding:10px 12px;margin-top:10px;}
   #invio_status.ok{color:var(--giallo);font-weight:700;}
   .req{color:#a15c00;font-weight:700;}
+  /* avviso importante dentro il modulo: stessa famiglia giallo/ambra del box errore invio */
+  .notebox-warn{background:var(--cli);border:2px solid var(--cli-border);border-radius:2px;padding:8px 10px;font-size:12.3px;color:#a15c00;margin:6px 0;line-height:1.5;}
   #print-area{display:none;}
   @media print{
     header, .layout, .q-footer, .q-intro, .torna-btn{display:none !important;}
@@ -390,16 +392,15 @@
 
     <div id="stepper" class="cliente-only"></div>
 
-    <div class="notebox">Hai dubbi sulla compilazione? Scrivimi a <b class="cfg-email">info@studiomonitor.it</b>: meglio una domanda in più che una casella sbagliata.</div>
+    <div class="notebox">Hai dubbi sulla compilazione? Scrivimi a <b class="cfg-email">info@studiomonitor.it</b></div>
 
     <div class="card">
       <h2>Come funziona questo questionario</h2>
       <ul class="introlist">
         <li>Spunta solo le caselle che ti riguardano per il <b>2025</b>: se una voce non c'entra con te, lasciala vuota.</li>
-        <li>Alcune risposte fanno comparire domande in più: è normale, servono a preparare bene la tua pratica.</li>
         <li>Non devi fare calcoli né conoscere il fisco: bastano date e codici fiscali dove richiesti, al resto pensa lo studio.</li>
-        <li>Se hai un dubbio, spunta la casella e scrivilo nelle note della sezione: meglio una voce in più che una dimenticata.</li>
-        <li>Alla fine invii la compilazione allo studio e stampi o salvi il PDF con l'elenco dei documenti da preparare.</li>
+        <li>Se hai un dubbio, o qualcosa da aggiungere, scrivilo nelle note.</li>
+        <li>Alla fine invii la compilazione allo studio e salvi il PDF con l'elenco dei documenti da preparare.</li>
       </ul>
     </div>
 
@@ -409,8 +410,7 @@
       <label class="q"><input type="checkbox" data-q="q_gia_cliente" data-excl="start"> Ho già fatto una dichiarazione con te</label>
       <div class="notebox child" data-parent="q_gia_cliente" style="display:none">
         Bene: molti dei tuoi dati e documenti potrebbero già essere nei miei archivi, e la preparazione
-        della pratica sarà più rapida. Compila comunque tutto il questionario: vale quello che è
-        successo nel 2025.
+        della pratica sarà più rapida. Compila comunque tutto il questionario.
       </div>
       <label class="q" style="margin-top:8px;"><input type="checkbox" data-q="q_per_conto_altri"> Compilo questa dichiarazione per conto di un'altra persona (minore, persona tutelata o deceduta)</label>
       <div class="child" data-parent="q_per_conto_altri" style="display:none">
@@ -429,7 +429,7 @@
         </div>
         <div class="field"><label>Residenza di chi compila</label><input type="text" data-field="dich_residenza"></div>
         <div class="field"><label>Data del decesso (solo se sei erede)</label><input type="date" data-field="dich_data_decesso" min="2025-01-01" max="2026-09-30"></div>
-        <div class="hint">In dichiarazione servono i dati di entrambi: i tuoi (chi presenta) e quelli della persona per cui dichiari. Se sei erede, il 730 si può usare per i decessi avvenuti fino al 30-09-2026; il rimborso arriva direttamente dall'Agenzia delle Entrate, quindi nella sezione 8 spunta anche "Non ho un sostituto d'imposta" e indica l'IBAN tuo, come erede.</div>
+        <div class="notebox-warn">In dichiarazione servono i dati di entrambi: i tuoi (chi presenta) e quelli della persona per cui dichiari. Se sei erede, il 730 si può usare per i decessi avvenuti fino al 30-09-2026; il rimborso arriva direttamente dall'Agenzia delle Entrate, quindi nella sezione 8 spunta anche "Non ho un sostituto d'imposta" e indica l'IBAN tuo, come erede.</div>
       </div>
       <div class="sez-avvisi" id="avv-percominciare"></div>
     </div>
@@ -1048,7 +1048,7 @@ function render(){
   const cliItems = attivi.filter(m=> m.owner==='CLIENTE' || m.owner==='CLIENTE*' || m.owner==='STUDIO*' || m.owner==='STUDIO/CLIENTE');
 
   document.getElementById('count-studio').textContent = studioItems.length+' documenti da recuperare';
-  document.getElementById('count-cli').textContent = cliItems.length+(IS_STUDIO?' documenti da chiedere al cliente':' documenti che dovrai preparare');
+  document.getElementById('count-cli').textContent = cliItems.length+(IS_STUDIO?' documenti da chiedere al cliente':' documenti');
   document.getElementById('list-studio').innerHTML = studioItems.length? studioItems.map(m=>itemHtml(m,'studio')).join('') : '<div class="empty">Nessun documento in Doc STUDIO. Spunta le caselle a sinistra.</div>';
   document.getElementById('list-cli').innerHTML = cliItems.length? cliItems.map(m=>itemHtml(m,'cli')).join('') : '<div class="empty">Nessun documento da chiedere al cliente al momento.</div>';
 

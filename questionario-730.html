@@ -304,7 +304,8 @@
     /* in stampa niente colonna flex né spazio per l'intestazione fissa: resta solo #print-area */
     body{background:#fff;display:block;padding-top:0;}
     #print-area{display:block;font-size:12px;color:#000;line-height:1.45;padding:0 4px;}
-    .p-head{border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:14px;}
+    .p-head{position:relative;border-bottom:3px solid #000;padding-bottom:9px;margin-bottom:18px;}
+    .p-head::after{content:'';position:absolute;left:0;right:0;bottom:-7px;border-bottom:1px solid #999;}
     .p-head .p-logo{height:44px;display:block;margin-bottom:4px;}
     .p-head .p-recapiti{font-size:11px;margin-top:2px;}
     .p-title{font-size:14px;font-weight:700;margin:10px 0 2px;}
@@ -312,7 +313,7 @@
     .p-sez{font-size:13px;font-weight:700;border-bottom:1px solid #888;margin:16px 0 6px;padding-bottom:2px;}
     .p-item{margin:0 0 7px;}
     .p-item .p-nota{font-size:11px;color:#333;}
-    .p-box{border:1px solid #000;border-radius:4px;padding:10px 12px;margin:10px 0;}
+    .p-box{border:1px solid #000;border-radius:2px;padding:10px 12px;margin:10px 0;}
     .p-firma{display:flex;gap:30px;margin-top:26px;}
     .p-firma div{flex:1;border-top:1px solid #000;padding-top:3px;font-size:11px;}
     .p-page{page-break-before:always;}
@@ -781,6 +782,23 @@
 function chk(s,id){ return !!s.checks[id]; }
 function itDate(x){ return x ? x.split('-').reverse().join('-') : ''; }
 
+// Dati dei familiari a carico ancora da avere dal cliente (per la voce "Dati familiari a carico"
+// nel pannello Doc CLIENTE): solo i campi con uno stato "vuoto" riconoscibile (testo/data/select
+// senza default) — i checkbox non li controlliamo perché "non spuntato" è già una risposta valida.
+function familiariIncompleti(s){
+  const mancanti = [];
+  if(chk(s,'q_coniuge_carico') && !(s.anagrafica.coniuge_cf||'').trim()) mancanti.push('il codice fiscale del coniuge');
+  s.familiari.filter(f=>f.nome).forEach(f=>{
+    if(!f.nascita) mancanti.push('la data di nascita di '+f.nome+' (figlio/a)');
+    if(!f.affido && !(f.cf||'').trim()) mancanti.push('il codice fiscale di '+f.nome+' (figlio/a)');
+  });
+  s.familiari2.filter(f=>f.nome).forEach(f=>{
+    if(!(f.parentela||'').trim()) mancanti.push('la parentela di '+f.nome);
+    if(!(f.cf||'').trim()) mancanti.push('il codice fiscale di '+f.nome);
+  });
+  return mancanti;
+}
+
 // ---------- A1: intestazione, recapiti e listino PARAMETRICI ----------
 // Punto unico di configurazione: quando in C0 si fissa il brand, si aggiorna SOLO qui
 // (vale per la pagina, per la stampa/PDF e per l'email dell'ordine).
@@ -829,92 +847,92 @@ const MASTER = [
   {id:'comunicazione_crediti', giust:'Comunicazione AdE maggiori crediti (se presente)', owner:'STUDIO', dove:'AdE → Servizi → Cassetto fiscale → Consultazioni → Dichiarazioni fiscali (segnalazioni di crediti/eccedenze da anni precedenti).', always:true},
   {id:'sanitarie_ts', giust:'Sanitarie tracciate - prospetto Sistema TS', owner:'STUDIO', dove:'Sistema Tessera Sanitaria → Area riservata → Cittadini → login SPID/CIE/CNS → Consultazione spese sanitarie → anno + "tutti gli erogatori" → Cerca → Scarica tutte le spese (poi convertire in PDF).', always:true},
 
-  {id:'carta_identita', giust:"Carta d'identità (o passaporto)", owner:'CLIENTE', clienteNota:"Documento d'identità in corso di validità: serve per le autocertificazioni.", always:true},
-  {id:'tessera_sanitaria', giust:'Tessera sanitaria', owner:'CLIENTE', clienteNota:'Verifica che sia già archiviata; se manca o è scaduta, chiedila.', always:true},
+  {id:'carta_identita', giust:"Carta d'identità o altro documento di identità in corso di validità", owner:'CLIENTE', always:true},
+  {id:'tessera_sanitaria', giust:'Tessera sanitaria', owner:'CLIENTE', always:true},
   {id:'autocert', giust:'Autocertificazione unica', owner:'STUDIO', dove:null, clienteNota:'La preparo io dai dati del foglio conoscitivo: la firmi prima della consegna al CAF. Non serve altro.', always:true},
 
   {id:'cambio_residenza', giust:'Cambio di residenza', owner:'STUDIO', dove:'AdE → Servizi → Cassetto fiscale → Consultazioni → Anagrafica: qui compaiono la residenza attuale e la data del cambio. Pagina stampabile/salvabile in PDF, vale come giustificativo.', trigger:s=>chk(s,'q_cambio_residenza_si')},
 
-  {id:'dati_familiari', giust:'Dati familiari a carico', owner:'CLIENTE', clienteNota:'Nessun documento da procurare: bastano i dati della tabella. Predisporrò io un\'unica autocertificazione, comprensiva anche dei familiari a carico, che ti farò firmare insieme alla dichiarazione.', trigger:s=>chk(s,'q_coniuge_carico')||chk(s,'q_figli')||chk(s,'q_altri_familiari')},
+  {id:'dati_familiari', giust:'Dati familiari a carico', owner:'CLIENTE', clienteNota:s=>'Dati familiari incompleti: comunicami '+familiariIncompleti(s).join('; ')+'.', trigger:s=>familiariIncompleti(s).length>0},
   {id:'verbale_invalidita', giust:'Verbale invalidità / L.104', owner:'CLIENTE', clienteNota:'Copia del verbale di invalidità civile / Legge 104.', trigger:s=> s.familiari.some(f=>f.disab) || s.familiari2.some(f=>f.disab)},
 
-  {id:'reddito_occasionale', giust:'Altro reddito - Occasionale', owner:'CLIENTE', clienteNota:'Ricevute o documento che attesti il compenso ricevuto.', trigger:s=>chk(s,'q_occasionale')},
-  {id:'reddito_interessi_privati', giust:'Altro reddito - Interessi privati', owner:'CLIENTE', clienteNota:'Documento del prestito e prova degli interessi incassati.', trigger:s=>chk(s,'q_interessi_privati')},
-  {id:'reddito_diritti_autore', giust:"Altro reddito - Diritti d'autore", owner:'CLIENTE', clienteNota:'Contratto e ricevute dei compensi.', trigger:s=>chk(s,'q_diritti_autore')},
-  {id:'reddito_locazione_beni', giust:'Altro reddito - Locazione beni (non immobili)', owner:'CLIENTE', clienteNota:'Contratto o ricevute.', trigger:s=>chk(s,'q_redditi_diversi_beni')},
-  {id:'reddito_assegno_ex', giust:'Altro reddito - Assegno ex coniuge ricevuto', owner:'CLIENTE', clienteNota:'Sentenza/accordo di separazione o divorzio e prova degli importi incassati. Se già in busta paga, di norma è già in CU.', trigger:s=>chk(s,'q_assegno_ricevuto')},
-  {id:'reddito_estero', giust:'Altro reddito - Estero', owner:'CLIENTE', clienteNota:"Documentazione dell'ente estero che ha erogato il reddito (+ imposte pagate all'estero se vuoi il credito d'imposta).", trigger:s=>chk(s,'q_redditi_estero')},
-  {id:'reddito_cripto', giust:'Altro reddito - Cripto', owner:'CLIENTE', clienteNota:"Estratto dall'exchange o riepilogo delle plusvalenze.", trigger:s=>chk(s,'q_cripto')},
-  {id:'reddito_assoc_partecipazione', giust:'Altro reddito - Associazione in partecipazione / recesso', owner:'CLIENTE', clienteNota:"Certificazione dei proventi percepiti rilasciata dalla società o dall'intermediario.", trigger:s=>chk(s,'q_assoc_partecipazione')},
-  {id:'reddito_plusvalenze', giust:'Altro reddito - Plusvalenze finanziarie', owner:'CLIENTE', clienteNota:'Estratto conto o riepilogo delle plusvalenze realizzate (titoli/strumenti fuori regime amministrato).', trigger:s=>chk(s,'q_plusvalenze_fin')},
-  {id:'reddito_sublocazione', giust:'Altro reddito - Sublocazione', owner:'CLIENTE', clienteNota:'Contratto di sublocazione e ricevute dei canoni incassati.', trigger:s=>chk(s,'q_sublocazione')},
-  {id:'reddito_tassazione_separata', giust:'Altro reddito - Tassazione separata (TFR/arretrati)', owner:'CLIENTE', clienteNota:"Documentazione dell'ente erogatore (TFR, arretrati) se non riportata in CU.", trigger:s=>chk(s,'q_tassazione_separata')},
-  {id:'somme_restituite', giust:'Somme restituite al soggetto erogatore', owner:'CLIENTE', clienteNota:'Documentazione delle somme restituite e della tassazione originaria.', trigger:s=>chk(s,'q_somme_restituite')},
+  {id:'reddito_occasionale', giust:'Compenso occasionale — ricevuta pagamento', owner:'CLIENTE', trigger:s=>chk(s,'q_occasionale')},
+  {id:'reddito_interessi_privati', giust:'Interessi su prestito privato — contratto di prestito', owner:'CLIENTE', clienteNota:'Serve anche la prova degli interessi incassati.', trigger:s=>chk(s,'q_interessi_privati')},
+  {id:'reddito_diritti_autore', giust:"Diritti d'autore — contratto e ricevute", owner:'CLIENTE', trigger:s=>chk(s,'q_diritti_autore')},
+  {id:'reddito_locazione_beni', giust:'Locazione di beni (non immobili) — contratto o ricevute', owner:'CLIENTE', trigger:s=>chk(s,'q_redditi_diversi_beni')},
+  {id:'reddito_assegno_ex', giust:"Assegno periodico dall'ex coniuge — sentenza o accordo", owner:'CLIENTE', clienteNota:'Serve anche la prova degli importi incassati. Se già in busta paga, di norma è già in CU.', trigger:s=>chk(s,'q_assegno_ricevuto')},
+  {id:'reddito_estero', giust:"Redditi prodotti all'estero — documentazione ente estero", owner:'CLIENTE', clienteNota:"Se vuoi il credito d'imposta, aggiungi le imposte pagate all'estero.", trigger:s=>chk(s,'q_redditi_estero')},
+  {id:'reddito_cripto', giust:'Guadagni da criptovalute — estratto exchange', owner:'CLIENTE', clienteNota:'In alternativa, riepilogo delle plusvalenze.', trigger:s=>chk(s,'q_cripto')},
+  {id:'reddito_assoc_partecipazione', giust:'Associazione in partecipazione / recesso — certificazione proventi', owner:'CLIENTE', trigger:s=>chk(s,'q_assoc_partecipazione')},
+  {id:'reddito_plusvalenze', giust:'Plusvalenze finanziarie — estratto conto', owner:'CLIENTE', clienteNota:'In alternativa, riepilogo delle plusvalenze. Vale per titoli/strumenti fuori regime amministrato.', trigger:s=>chk(s,'q_plusvalenze_fin')},
+  {id:'reddito_sublocazione', giust:'Sublocazione — contratto e ricevute', owner:'CLIENTE', trigger:s=>chk(s,'q_sublocazione')},
+  {id:'reddito_tassazione_separata', giust:'Tassazione separata (TFR/arretrati) — documentazione ente erogatore', owner:'CLIENTE', clienteNota:'Solo se non riportata in CU.', trigger:s=>chk(s,'q_tassazione_separata')},
+  {id:'somme_restituite', giust:'Somme restituite al soggetto erogatore — documentazione della restituzione', owner:'CLIENTE', clienteNota:'Serve anche la prova della tassazione originaria.', trigger:s=>chk(s,'q_somme_restituite')},
 
   {id:'visura_catastale', giust:'Visura catastale', owner:'STUDIO', dove:'AdE → Servizi → Visure, planimetrie e ispezioni ipotecarie → Propri immobili → Visura per soggetto analitica → Consultazioni personali → Archivio richieste.', trigger:s=>chk(s,'q_terreni')||chk(s,'q_fabbricati')},
-  {id:'rivalutazione_terreno', giust:'Rivalutazione terreno', owner:'CLIENTE', clienteNota:"Perizia giurata di stima e ricevuta del versamento dell'imposta sostitutiva.", trigger:s=>chk(s,'q_rivalutazione_terreno')},
-  {id:'rivalutazione_partecipazioni', giust:'Rivalutazione partecipazione societaria', owner:'CLIENTE', clienteNota:"Perizia giurata di stima della partecipazione e ricevuta del versamento dell'imposta sostitutiva.", trigger:s=>chk(s,'q_rivalutazione_partecipazioni')},
-  {id:'atto_notaio', giust:'Atto di compravendita/rogito', owner:'STUDIO*', dove:"Per l'atto completo, se telematico: AdE → Servizi → Visure, planimetrie e ispezioni ipotecarie → Ricerca (sulla riga del proprio CF) → Ricerca sulla provincia → Ricerca sul singolo immobile.", clienteNota:'Te lo chiedo solo se non riesco a scaricarlo (atti più datati, non digitalizzati).', trigger:s=>chk(s,'q_immobile_2025_movimento')},
-  {id:'contratto_locaz_locatore', giust:'Contratto di locazione (locatore)', owner:'STUDIO*', dove:'AdE → Servizi → Cassetto fiscale → Consultazioni → Registro (unica fonte per i contratti di locazione registrati).', clienteNota:'Te ne chiedo copia solo se non riesco a scaricarlo.', trigger:s=>chk(s,'q_fab_affittato')},
-  {id:'contratto_comodato', giust:"Contratto di comodato d'uso registrato", owner:'STUDIO*', dove:'AdE → Servizi → Cassetto fiscale → Consultazioni → Registro (contratti registrati; il comodato registrato compare qui come la locazione).', clienteNota:"Te ne chiedo copia solo se non riesco a scaricarlo. Serve per l'IMU/agevolazione del comodato registrato a figli/genitori.", trigger:s=>chk(s,'q_fab_comodato_registrato')},
-  {id:'immobile_da_locare', giust:'Costruzione/acquisto immobile da locare', owner:'CLIENTE', clienteNota:"Fatture di costruzione/acquisto e contratto di locazione dell'immobile.", trigger:s=>chk(s,'q_immobile_da_locare')},
-  {id:'iva_classe_energetica', giust:'IVA acquisto abitazione classe A/B', owner:'CLIENTE', clienteNota:"Fattura d'acquisto con IVA evidenziata e attestato di classe energetica.", trigger:s=>chk(s,'q_iva_classe_ab')},
-  {id:'patrimonio_estero_immobili', giust:'Immobili/terreni esteri (Quadro W - IVIE)', owner:'CLIENTE', clienteNota:"Atto/documentazione dell'immobile estero e dati per il calcolo dell'IVIE.", trigger:s=>chk(s,'q_immobili_estero')},
-  {id:'plusvalenza_immobiliare', giust:'Plusvalenza immobiliare infraquinquennale', owner:'STUDIO*', dove:'Atti di acquisto e vendita, se telematici: AdE → Servizi → Visure, planimetrie e ispezioni ipotecarie → Ricerca (sulla riga del proprio CF) → Ricerca sulla provincia → Ricerca sul singolo immobile.', clienteNota:"Solo se il notaio NON ha applicato l'imposta sostitutiva del 26% in atto. Servono atto di acquisto + atto di vendita (li recupero io se telematici), fattura del notaio e documenti delle spese incrementative (ristrutturazioni) che riducono la plusvalenza.", trigger:s=>chk(s,'q_venduto_meno5anni')},
+  {id:'rivalutazione_terreno', giust:'Rivalutazione terreno — perizia giurata', owner:'CLIENTE', clienteNota:"Serve anche la ricevuta del versamento dell'imposta sostitutiva.", trigger:s=>chk(s,'q_rivalutazione_terreno')},
+  {id:'rivalutazione_partecipazioni', giust:'Rivalutazione partecipazione societaria — perizia giurata', owner:'CLIENTE', clienteNota:"Serve anche la ricevuta del versamento dell'imposta sostitutiva.", trigger:s=>chk(s,'q_rivalutazione_partecipazioni')},
+  {id:'atto_notaio', giust:'Atto di compravendita/rogito', owner:'STUDIO*', dove:"Per l'atto completo, se telematico: AdE → Servizi → Visure, planimetrie e ispezioni ipotecarie → Ricerca (sulla riga del proprio CF) → Ricerca sulla provincia → Ricerca sul singolo immobile.", clienteNota:'Te lo chiedo solo se non riesco a recuperarlo io (atti più vecchi, non digitalizzati).', trigger:s=>chk(s,'q_immobile_2025_movimento')},
+  {id:'contratto_locaz_locatore', giust:'Contratto di locazione (locatore)', owner:'STUDIO*', dove:'AdE → Servizi → Cassetto fiscale → Consultazioni → Registro (unica fonte per i contratti di locazione registrati).', clienteNota:'Te ne chiedo una copia, non sempre riesco a reperirlo dal cassetto fiscale.', trigger:s=>chk(s,'q_fab_affittato')},
+  {id:'contratto_comodato', giust:"Contratto di comodato d'uso registrato", owner:'STUDIO*', dove:'AdE → Servizi → Cassetto fiscale → Consultazioni → Registro (contratti registrati; il comodato registrato compare qui come la locazione).', clienteNota:"Te ne chiedo una copia, non sempre riesco a reperirlo dal cassetto fiscale. Serve per l'agevolazione IMU.", trigger:s=>chk(s,'q_fab_comodato_registrato')},
+  {id:'immobile_da_locare', giust:'Costruzione/acquisto immobile da locare — fatture e contratto', owner:'CLIENTE', trigger:s=>chk(s,'q_immobile_da_locare')},
+  {id:'iva_classe_energetica', giust:'Acquisto abitazione classe A/B — fattura e attestato', owner:'CLIENTE', clienteNota:'Fattura con IVA evidenziata.', trigger:s=>chk(s,'q_iva_classe_ab')},
+  {id:'patrimonio_estero_immobili', giust:'Immobili/terreni esteri (Quadro W) — atto e documentazione', owner:'CLIENTE', clienteNota:"Servono anche i dati per calcolare l'IVIE.", trigger:s=>chk(s,'q_immobili_estero')},
+  {id:'plusvalenza_immobiliare', giust:'Plusvalenza immobiliare infraquinquennale — fattura notaio', owner:'STUDIO*', dove:'Atti di acquisto e vendita, se telematici: AdE → Servizi → Visure, planimetrie e ispezioni ipotecarie → Ricerca (sulla riga del proprio CF) → Ricerca sulla provincia → Ricerca sul singolo immobile.', clienteNota:"Servono anche i documenti delle spese incrementative (ristrutturazioni). Vale solo se il notaio non ha applicato l'imposta sostitutiva del 26% in atto; gli atti di acquisto e vendita li recupero io se telematici.", trigger:s=>chk(s,'q_venduto_meno5anni')},
 
   {id:'atto_mutuo', giust:'Atto di mutuo', owner:'CLIENTE*', dove:"Per l'atto completo, fallback IO: AdE → Servizi → Visure, planimetrie e ispezioni ipotecarie → Ricerca (sulla riga del proprio CF) → Ricerca sulla provincia → Ricerca sul singolo immobile.", clienteNota:"Se ce l'hai, giramelo tu; altrimenti provo a recuperarlo io.", trigger:s=>chk(s,'q_mutuo_principale')},
-  {id:'interessi_mutuo', giust:'Interessi passivi mutuo', owner:'CLIENTE', clienteNota:'Certificato/attestazione degli interessi rilasciato dalla banca (di norma include gli oneri accessori).', trigger:s=>chk(s,'q_mutuo_principale')},
-  {id:'notaio_mutuo', giust:'Onorario notaio quota mutuo', owner:'CLIENTE', clienteNota:'Fattura del notaio, per la parte riferita al mutuo.', trigger:s=>chk(s,'q_acquisto_2025_mutuo')},
-  {id:'leasing_abitativo', giust:'Canoni leasing abitativo', owner:'CLIENTE', clienteNota:"Attestazione della società di leasing con i canoni e l'eventuale riscatto pagati nell'anno.", trigger:s=>chk(s,'q_leasing_abitativo')},
-  {id:'mutuo_agrario', giust:'Mutuo agrario', owner:'CLIENTE', clienteNota:'Contratto di mutuo agrario e attestazioni bancarie degli interessi pagati.', trigger:s=>chk(s,'q_mutuo_agrario')},
+  {id:'interessi_mutuo', giust:'Interessi passivi mutuo — certificazione banca', owner:'CLIENTE', clienteNota:'Di norma include già gli oneri accessori.', trigger:s=>chk(s,'q_mutuo_principale')},
+  {id:'notaio_mutuo', giust:'Onorario notaio quota mutuo — fattura notaio', owner:'CLIENTE', trigger:s=>chk(s,'q_acquisto_2025_mutuo')},
+  {id:'leasing_abitativo', giust:'Leasing abitativo — attestazione canoni', owner:'CLIENTE', clienteNota:"Con l'eventuale riscatto pagato nell'anno.", trigger:s=>chk(s,'q_leasing_abitativo')},
+  {id:'mutuo_agrario', giust:'Mutuo agrario — contratto e attestazione', owner:'CLIENTE', trigger:s=>chk(s,'q_mutuo_agrario')},
   {id:'fatture_lavori', giust:'Fatture lavori agevolati', owner:'CLIENTE', clienteNota:'Fatture delle spese e bonifici "parlanti" specifici per la detrazione.', trigger:s=>chk(s,'q_lavori_agevolati')},
   {id:'abilitazione_lavori', giust:'Abilitazione lavori (CILA/SCIA/permesso)', owner:'CLIENTE', clienteNota:'Se non serviva per quei lavori, te lo dico io e firmi una dichiarazione sostitutiva.', trigger:s=>chk(s,'q_lavori_agevolati')},
   {id:'enea', giust:'Ricevuta ENEA (ecobonus)', owner:'CLIENTE', clienteNota:'Ricevuta di invio ENEA.', trigger:s=>chk(s,'q_lavori_agevolati') && chk(s,'q_tipo_ecobonus')},
   {id:'asseverazione', giust:'Asseverazione tecnico (sisma/barriere)', owner:'CLIENTE', clienteNota:'Asseverazione del tecnico sulle classi di rischio o sulla conformità.', trigger:s=>chk(s,'q_lavori_agevolati') && (chk(s,'q_tipo_sismabonus')||chk(s,'q_tipo_barriere'))},
   {id:'bonus_mobili', giust:'Bonus mobili (fattura + pagamento)', owner:'CLIENTE', clienteNota:'Fattura mobili/elettrodomestici + prova di pagamento tracciabile.', trigger:s=>chk(s,'q_lavori_agevolati') && chk(s,'q_tipo_bonus_mobili')},
-  {id:'parti_comuni', giust:'Parti comuni condominiali', owner:'CLIENTE', clienteNota:"Attestazione dell'amministratore con la tua quota di spesa + copia della delibera assembleare.", trigger:s=>chk(s,'q_lavori_agevolati') && chk(s,'q_lavori_parti_comuni')},
+  {id:'parti_comuni', giust:'Lavori su parti comuni condominiali — attestazione amministratore', owner:'CLIENTE', clienteNota:'Serve anche la copia della delibera assembleare, con la tua quota di spesa.', trigger:s=>chk(s,'q_lavori_agevolati') && chk(s,'q_lavori_parti_comuni')},
   {id:'rate_bonus_prec', giust:'Rate bonus anni precedenti', owner:'STUDIO', dove:"Dichiarazione dell'anno precedente → quadro E sez. III/IV: riprendere le rate residue e verificare la continuità (es. immobile venduto → le rate passano di norma all'acquirente).", trigger:s=>chk(s,'q_rate_bonus_precedenti')},
 
-  {id:'sanitarie_non_tracciate', giust:'Sanitarie non tracciate', owner:'CLIENTE', clienteNota:'Fatture/ricevute + prova di pagamento tracciabile (contanti ok solo farmacia/prestazioni SSN).', trigger:s=>chk(s,'q_spese_sanitarie')},
-  {id:'sanitarie_disabilita', giust:'Sanitarie per disabilità', owner:'CLIENTE', clienteNota:'Fatture o ricevute.', trigger:s=>chk(s,'q_spese_sanitarie_disabilita')},
-  {id:'sanitarie_patologie_esenti', giust:'Sanitarie familiare non a carico (patologia esente)', owner:'CLIENTE', clienteNota:"Fatture o ricevute + attestazione della patologia con esenzione. Detraibile solo la parte che non trova capienza nella dichiarazione del familiare (limite 6.197,48 €).", trigger:s=>chk(s,'q_sanitarie_patologie_esenti')},
-  {id:'assistenza_non_autosuff', giust:'Assistenza non autosufficienti', owner:'CLIENTE', clienteNota:'Ricevute di pagamento + certificazione medica di non autosufficienza.', trigger:s=>chk(s,'q_assistenza_non_autosuff')},
-  {id:'veicoli_disabili', giust:'Veicoli per disabili / cani guida', owner:'CLIENTE', clienteNota:'Fattura di acquisto + certificazione di possesso del cane guida o del riconoscimento di handicap.', trigger:s=>chk(s,'q_veicoli_disabili')},
-  {id:'interpretariato', giust:'Servizi di interpretariato (sordi)', owner:'CLIENTE', clienteNota:'Fatture del servizio di interpretariato.', trigger:s=>chk(s,'q_interpretariato')},
-  {id:'asilo_nido', giust:'Asilo nido', owner:'CLIENTE', clienteNota:'Ricevute o bollettini della retta. Segnala se hai già il Bonus Nido INPS (non cumulabile sulla stessa spesa).', trigger:s=>chk(s,'q_asilo_nido')},
-  {id:'istruzione', giust:'Istruzione scolastica', owner:'CLIENTE', clienteNota:'Ricevute o bollettini di pagamento (retta, mensa, gite, trasporto).', trigger:s=>chk(s,'q_spese_scolastiche')},
-  {id:'universita', giust:'Università', owner:'CLIENTE', clienteNota:'Ricevute delle tasse universitarie.', trigger:s=>chk(s,'q_universita')},
-  {id:'affitto_studente', giust:'Affitto studente fuori sede', owner:'CLIENTE', clienteNota:'Ricevute del canone (il contratto lo recupero io se possibile).', trigger:s=>chk(s,'q_affitto_studente')},
-  {id:'sport_figli', giust:'Attività sportiva figli (5-18)', owner:'CLIENTE', clienteNota:"Ricevuta con dati dell'associazione sportiva + CF di chi pratica e di chi paga.", trigger:s=>chk(s,'q_sport_figli')},
-  {id:'corsi_musica', giust:'Corsi di musica figli (5-18)', owner:'CLIENTE', clienteNota:'Ricevute di iscrizione o abbonamento.', trigger:s=>chk(s,'q_corsi_musica')},
-  {id:'dsa', giust:'Spese DSA', owner:'CLIENTE', clienteNota:'Fatture degli strumenti/software + certificazione DSA.', trigger:s=>chk(s,'q_dsa')},
-  {id:'contratto_locaz_conduttore', giust:'Contratto di locazione (conduttore)', owner:'STUDIO*', dove:'AdE → Servizi → Cassetto fiscale → Consultazioni → Registro (unica fonte per i contratti di locazione registrati).', clienteNota:'Te ne chiedo copia solo se non riesco a scaricarlo. Nessuna fattura per il canone: solo autocertificazione.', trigger:s=>chk(s,'q_affitto_inquilino')},
-  {id:'intermediazione_imm', giust:'Intermediazione immobiliare', owner:'CLIENTE', clienteNota:"Fattura dell'agenzia immobiliare (acquisto prima casa).", trigger:s=>chk(s,'q_intermediazione_immobiliare')},
-  {id:'trasporto_pubblico', giust:'Trasporto pubblico', owner:'CLIENTE', clienteNota:'Ricevuta o abbonamento.', trigger:s=>chk(s,'q_trasporto_pubblico')},
-  {id:'assicurazioni', giust:'Assicurazioni', owner:'CLIENTE', clienteNota:'Quietanza del premio annuale (vita/infortuni/calamità).', trigger:s=>chk(s,'q_assicurazioni')},
-  {id:'erogazioni_liberali', giust:'Erogazioni liberali', owner:'CLIENTE', clienteNota:"Ricevuta di versamento tracciabile dell'ente beneficiario.", trigger:s=>chk(s,'q_erogazioni_liberali')},
-  {id:'veterinarie', giust:'Spese veterinarie', owner:'CLIENTE', clienteNota:'Fatture o scontrini parlanti.', trigger:s=>chk(s,'q_veterinarie')},
-  {id:'funebri', giust:'Spese funebri', owner:'CLIENTE', clienteNota:"Fattura dell'agenzia funebre.", trigger:s=>chk(s,'q_funebri')},
-  {id:'immobile_vincolato', giust:'Immobile con vincolo storico/artistico', owner:'CLIENTE', clienteNota:'Fatture delle spese di manutenzione + dichiarazione di sussistenza del vincolo.', trigger:s=>chk(s,'q_immobile_vincolato')},
-  {id:'colf_badante', giust:'Contributi colf/badante', owner:'CLIENTE', clienteNota:'Attestazione contributiva INPS.', trigger:s=>chk(s,'q_colf_badante')},
-  {id:'fondo_pensione', giust:'Fondo pensione', owner:'CLIENTE', clienteNota:'Certificazione del fondo pensione (versamenti diretti, non quelli in busta paga).', trigger:s=>chk(s,'q_fondo_pensione')},
-  {id:'riscatto_laurea', giust:'Riscatto laurea', owner:'CLIENTE', clienteNota:'Quietanza di pagamento INPS.', trigger:s=>chk(s,'q_riscatto_laurea')},
-  {id:'altri_contributi', giust:'Altri contributi previdenziali', owner:'CLIENTE', clienteNota:'Attestazione del versamento.', trigger:s=>chk(s,'q_altri_contributi')},
-  {id:'assegno_versato', giust:'Assegno ex coniuge versato', owner:'CLIENTE', clienteNota:'Sentenza/accordo + prova dei bonifici effettuati.', trigger:s=>chk(s,'q_assegno_versato')},
-  {id:'consorzio_bonifica', giust:'Contributi consorzio di bonifica', owner:'CLIENTE', clienteNota:'Ricevuta di pagamento del contributo al consorzio di bonifica.', trigger:s=>chk(s,'q_consorzio_bonifica')},
-  {id:'adozione', giust:'Spese per adozione', owner:'CLIENTE', clienteNota:"Documentazione delle spese sostenute per l'adozione (nazionale o internazionale).", trigger:s=>chk(s,'q_adozione')},
-  {id:'pace_contributiva', giust:'Riscatto pace contributiva', owner:'CLIENTE', clienteNota:'Quietanza di pagamento INPS per il riscatto.', trigger:s=>chk(s,'q_pace_contributiva')},
-  {id:'colonnina_ricarica', giust:'Colonnina di ricarica veicoli elettrici', owner:'CLIENTE', clienteNota:"Fattura e prova del pagamento tracciabile per l'installazione.", trigger:s=>chk(s,'q_colonnina_ricarica')},
+  {id:'sanitarie_non_tracciate', giust:'Spese sanitarie non tracciate — fatture o ricevute', owner:'CLIENTE', clienteNota:'Prova di pagamento tracciabile (contanti ok solo farmacia/prestazioni SSN).', trigger:s=>chk(s,'q_spese_sanitarie')},
+  {id:'sanitarie_disabilita', giust:'Spese sanitarie per disabilità — fatture o ricevute', owner:'CLIENTE', trigger:s=>chk(s,'q_spese_sanitarie_disabilita')},
+  {id:'sanitarie_patologie_esenti', giust:'Sanitarie per familiare non a carico — fatture e attestazione', owner:'CLIENTE', clienteNota:'Patologia esente; detraibile solo la parte che non trova capienza nella dichiarazione del familiare (limite 6.197,48 €).', trigger:s=>chk(s,'q_sanitarie_patologie_esenti')},
+  {id:'assistenza_non_autosuff', giust:'Assistenza non autosufficienti — ricevute e certificazione', owner:'CLIENTE', trigger:s=>chk(s,'q_assistenza_non_autosuff')},
+  {id:'veicoli_disabili', giust:'Veicoli per disabili / cani guida — fattura e certificazione', owner:'CLIENTE', clienteNota:"Certificazione di possesso del cane guida o di riconoscimento dell'handicap.", trigger:s=>chk(s,'q_veicoli_disabili')},
+  {id:'interpretariato', giust:'Interpretariato (sordi) — fatture servizio', owner:'CLIENTE', trigger:s=>chk(s,'q_interpretariato')},
+  {id:'asilo_nido', giust:'Asilo nido — ricevute o bollettini', owner:'CLIENTE', clienteNota:'Segnala se hai già il Bonus Nido INPS (non cumulabile sulla stessa spesa).', trigger:s=>chk(s,'q_asilo_nido')},
+  {id:'istruzione', giust:'Spese scolastiche — ricevute o bollettini', owner:'CLIENTE', clienteNota:'Retta, mensa, gite, trasporto.', trigger:s=>chk(s,'q_spese_scolastiche')},
+  {id:'universita', giust:'Università — ricevute tasse', owner:'CLIENTE', trigger:s=>chk(s,'q_universita')},
+  {id:'affitto_studente', giust:'Affitto studente fuori sede — ricevute canone', owner:'CLIENTE', clienteNota:'Il contratto lo recupero io se possibile.', trigger:s=>chk(s,'q_affitto_studente')},
+  {id:'sport_figli', giust:'Attività sportiva figli (5-18) — ricevuta associazione', owner:'CLIENTE', clienteNota:'Con CF di chi pratica e di chi paga.', trigger:s=>chk(s,'q_sport_figli')},
+  {id:'corsi_musica', giust:'Corsi di musica figli (5-18) — ricevute', owner:'CLIENTE', trigger:s=>chk(s,'q_corsi_musica')},
+  {id:'dsa', giust:'Spese DSA — fatture strumenti/software', owner:'CLIENTE', clienteNota:'Serve anche la certificazione DSA.', trigger:s=>chk(s,'q_dsa')},
+  {id:'contratto_locaz_conduttore', giust:'Contratto di locazione (conduttore)', owner:'STUDIO*', dove:'AdE → Servizi → Cassetto fiscale → Consultazioni → Registro (unica fonte per i contratti di locazione registrati).', clienteNota:'Te ne chiedo una copia, non sempre riesco a reperirlo dal cassetto fiscale. Nessuna fattura per il canone: solo autocertificazione.', trigger:s=>chk(s,'q_affitto_inquilino')},
+  {id:'intermediazione_imm', giust:'Intermediazione immobiliare — fattura agenzia', owner:'CLIENTE', trigger:s=>chk(s,'q_intermediazione_immobiliare')},
+  {id:'trasporto_pubblico', giust:'Trasporto pubblico — ricevuta o abbonamento', owner:'CLIENTE', trigger:s=>chk(s,'q_trasporto_pubblico')},
+  {id:'assicurazioni', giust:'Assicurazioni — quietanza premio', owner:'CLIENTE', clienteNota:'Vita/infortuni/calamità.', trigger:s=>chk(s,'q_assicurazioni')},
+  {id:'erogazioni_liberali', giust:'Erogazioni liberali — ricevuta versamento', owner:'CLIENTE', clienteNota:"Tracciabile, dell'ente beneficiario.", trigger:s=>chk(s,'q_erogazioni_liberali')},
+  {id:'veterinarie', giust:'Spese veterinarie — fatture o scontrini', owner:'CLIENTE', trigger:s=>chk(s,'q_veterinarie')},
+  {id:'funebri', giust:'Spese funebri — fattura agenzia', owner:'CLIENTE', trigger:s=>chk(s,'q_funebri')},
+  {id:'immobile_vincolato', giust:'Immobile con vincolo storico/artistico — fatture e dichiarazione', owner:'CLIENTE', trigger:s=>chk(s,'q_immobile_vincolato')},
+  {id:'colf_badante', giust:'Contributi colf/badante — attestazione INPS', owner:'CLIENTE', trigger:s=>chk(s,'q_colf_badante')},
+  {id:'fondo_pensione', giust:'Fondo pensione — certificazione fondo', owner:'CLIENTE', clienteNota:'Solo versamenti diretti, non quelli già in busta paga.', trigger:s=>chk(s,'q_fondo_pensione')},
+  {id:'riscatto_laurea', giust:'Riscatto laurea — quietanza INPS', owner:'CLIENTE', trigger:s=>chk(s,'q_riscatto_laurea')},
+  {id:'altri_contributi', giust:'Altri contributi previdenziali — attestazione versamento', owner:'CLIENTE', trigger:s=>chk(s,'q_altri_contributi')},
+  {id:'assegno_versato', giust:'Assegno ex coniuge versato — sentenza e prova bonifici', owner:'CLIENTE', trigger:s=>chk(s,'q_assegno_versato')},
+  {id:'consorzio_bonifica', giust:'Contributi consorzio di bonifica — ricevuta pagamento', owner:'CLIENTE', trigger:s=>chk(s,'q_consorzio_bonifica')},
+  {id:'adozione', giust:'Spese per adozione — documentazione spese', owner:'CLIENTE', clienteNota:'Nazionale o internazionale.', trigger:s=>chk(s,'q_adozione')},
+  {id:'pace_contributiva', giust:'Riscatto pace contributiva — quietanza INPS', owner:'CLIENTE', trigger:s=>chk(s,'q_pace_contributiva')},
+  {id:'colonnina_ricarica', giust:'Colonnina di ricarica veicoli elettrici — fattura e pagamento', owner:'CLIENTE', trigger:s=>chk(s,'q_colonnina_ricarica')},
 
-  {id:'patrimonio_estero', giust:'Attività finanziarie estere (Quadro W - IVAFE)', owner:'CLIENTE', clienteNota:'Estratti conto/certificazioni di saldo della banca estera; per le cripto, riepilogo exchange.', trigger:s=>chk(s,'q_patrimonio_estero')},
-  {id:'credito_riacquisto', giust:'Credito riacquisto prima casa', owner:'STUDIO*', dove:"Il credito nasce dall'imposta di registro (o IVA) pagata sull'atto della VECCHIA prima casa, utilizzabile fino all'imposta dovuta sul nuovo atto. Si legge nell'atto stesso (non nella fattura del notaio). Se entrambi gli atti sono telematici: AdE → Servizi → Visure, planimetrie e ispezioni ipotecarie → Ricerca (sulla riga del proprio CF) → Ricerca sulla provincia → Ricerca sul singolo immobile.", clienteNota:'Te li chiedo solo se non riesco a recuperarli io: atto di vendita vecchia casa + atto di acquisto nuova casa.', trigger:s=>chk(s,'q_credito_riacquisto_casa')},
-  {id:'credito_canoni', giust:'Credito canoni non percepiti', owner:'CLIENTE', clienteNota:"Copia dell'intimazione di sfratto/ingiunzione di pagamento (o sentenza di convalida, se già ottenuta).", trigger:s=>chk(s,'q_credito_canoni_non_percepiti')},
-  {id:'amministratore_condominio', giust:'Amministratore di condominio (Quadro K)', owner:'CLIENTE', clienteNota:"Elenco fornitori e pagamenti del condominio nell'anno + dati catastali di eventuali interventi sulle parti comuni.", trigger:s=>chk(s,'q_amministratore_condominio')},
-  {id:'under36_primacasa', giust:'Credito prima casa under 36', owner:'CLIENTE', clienteNota:'Atto di acquisto (se non lo recupero io) e attestazione ISEE in corso di validità.', trigger:s=>chk(s,'q_under36_primacasa')},
-  {id:'credito_sisma_abruzzo', giust:'Credito immobili sisma Abruzzo', owner:'CLIENTE', clienteNota:'Documentazione della ricostruzione e del credito riconosciuto.', trigger:s=>chk(s,'q_credito_sisma_abruzzo')},
-  {id:'credito_reintegro_fp', giust:'Credito reintegro fondo pensione / incremento occupazione', owner:'CLIENTE', clienteNota:'Documentazione del fondo pensione o del datore di lavoro attestante il credito.', trigger:s=>chk(s,'q_credito_reintegro_fp')},
-  {id:'art_bonus', giust:'Art bonus (erogazioni cultura)', owner:'CLIENTE', clienteNota:"Ricevuta di versamento tracciabile e attestazione dell'ente culturale beneficiario.", trigger:s=>chk(s,'q_art_bonus')},
-  {id:'bonus_montagna', giust:'Bonus casa Comuni di montagna', owner:'CLIENTE', clienteNota:'Documentazione delle spese/ristrutturazione e dei requisiti del Comune di montagna.', trigger:s=>chk(s,'q_bonus_montagna')},
+  {id:'patrimonio_estero', giust:'Attività finanziarie estere (Quadro W) — estratti banca', owner:'CLIENTE', clienteNota:'Certificazioni di saldo; per le cripto, riepilogo exchange.', trigger:s=>chk(s,'q_patrimonio_estero')},
+  {id:'credito_riacquisto', giust:'Credito riacquisto prima casa — atti di acquisto/vendita', owner:'STUDIO*', dove:"Il credito nasce dall'imposta di registro (o IVA) pagata sull'atto della VECCHIA prima casa, utilizzabile fino all'imposta dovuta sul nuovo atto. Si legge nell'atto stesso (non nella fattura del notaio). Se entrambi gli atti sono telematici: AdE → Servizi → Visure, planimetrie e ispezioni ipotecarie → Ricerca (sulla riga del proprio CF) → Ricerca sulla provincia → Ricerca sul singolo immobile.", clienteNota:'Vendita della vecchia casa e acquisto della nuova. Te li chiedo solo se non riesco a recuperarli io.', trigger:s=>chk(s,'q_credito_riacquisto_casa')},
+  {id:'credito_canoni', giust:'Credito canoni non percepiti — intimazione sfratto', owner:'CLIENTE', clienteNota:'In alternativa, la sentenza di convalida, se già ottenuta.', trigger:s=>chk(s,'q_credito_canoni_non_percepiti')},
+  {id:'amministratore_condominio', giust:'Amministratore di condominio (Quadro K) — elenco fornitori', owner:'CLIENTE', clienteNota:'Servono anche i dati catastali di eventuali interventi sulle parti comuni.', trigger:s=>chk(s,'q_amministratore_condominio')},
+  {id:'under36_primacasa', giust:'Credito prima casa under 36 — atto e ISEE', owner:'CLIENTE', clienteNota:'Atto solo se non lo recupero io.', trigger:s=>chk(s,'q_under36_primacasa')},
+  {id:'credito_sisma_abruzzo', giust:'Credito immobili sisma Abruzzo — documentazione ricostruzione', owner:'CLIENTE', clienteNota:'Comprende anche il credito riconosciuto.', trigger:s=>chk(s,'q_credito_sisma_abruzzo')},
+  {id:'credito_reintegro_fp', giust:'Credito reintegro fondo pensione — documentazione fondo/datore', owner:'CLIENTE', clienteNota:"Attestante il credito d'imposta.", trigger:s=>chk(s,'q_credito_reintegro_fp')},
+  {id:'art_bonus', giust:'Art bonus (erogazioni cultura) — ricevuta e attestazione', owner:'CLIENTE', trigger:s=>chk(s,'q_art_bonus')},
+  {id:'bonus_montagna', giust:'Bonus casa Comuni di montagna — documentazione spese', owner:'CLIENTE', clienteNota:'Serve anche la prova dei requisiti del Comune di montagna.', trigger:s=>chk(s,'q_bonus_montagna')},
   {id:'crediti_minori', giust:"Altri crediti d'imposta minori", owner:'CLIENTE', clienteNota:'Dimmi quale: la documentazione richiesta varia caso per caso.', trigger:s=>chk(s,'q_crediti_minori')},
 ];
 
@@ -1042,7 +1060,8 @@ function itemHtml(m, forWho){
 function render(){
   applyDisclosure();
   const s = getState();
-  const attivi = MASTER.filter(m=> m.always || (m.trigger && m.trigger(s)));
+  const attivi = MASTER.filter(m=> m.always || (m.trigger && m.trigger(s)))
+    .map(m=> typeof m.clienteNota==='function' ? Object.assign({}, m, {clienteNota: m.clienteNota(s)}) : m);
 
   const studioItems = attivi.filter(m=> m.owner==='STUDIO' || m.owner==='STUDIO*' || m.owner==='STUDIO/CLIENTE');
   const cliItems = attivi.filter(m=> m.owner==='CLIENTE' || m.owner==='CLIENTE*' || m.owner==='STUDIO*' || m.owner==='STUDIO/CLIENTE');
@@ -1456,7 +1475,7 @@ function buildPrintHtml(mode){
     h += '<div class="p-page">'
       + '<div class="p-title">Autorizzazione alla consegna in formato esclusivamente digitale</div>'
       + '<div class="p-box">Il/La sottoscritto/a <b>'+escapeHtml(a.nome||'________________________________')+'</b>, codice fiscale <b>'+(a.cf||'________________')+'</b>, autorizza <b>'+CONFIG.studio.nome+'</b> a consegnare copia della dichiarazione modello 730/'+CONFIG.annoDich+' elaborata, del prospetto di liquidazione (mod. 730-3) e delle comunicazioni relative alla pratica esclusivamente in formato elettronico (PDF), all\'indirizzo email: <b>'+escapeHtml(a.email||'________________________________')+'</b>.<br><br>'
-      + 'Dichiara: di disporre degli strumenti necessari per ricevere, visualizzare, stampare e conservare i documenti; che l\'indirizzo email indicato è nella propria disponibilità; di sapere che questa autorizzazione è revocabile in ogni momento, con ritorno alla consegna cartacea al prezzo di listino ('+CONFIG.listino.prezzoBase+' €); di accettare il corrispettivo di <b>'+prezzoDig+' €</b> per il servizio con consegna solo digitale.<br><br>'
+      + 'Dichiara: di disporre degli strumenti necessari per ricevere, visualizzare, stampare e conservare i documenti; che l\'indirizzo email indicato è nella propria disponibilità; di sapere che questa autorizzazione è revocabile in ogni momento, con ritorno alla consegna cartacea.<br><br>'
       + '<span style="font-size:10px">Riferimenti: art. 16, D.M. 31-05-1999 n. 164 (consegna al contribuente della dichiarazione elaborata e del prospetto di liquidazione); Risoluzione Agenzia delle Entrate 21-12-2006 n. 145/E (consegna in formato elettronico previo consenso del destinatario, che deve poter ricevere e stampare il documento).</span>'
       + '<div class="p-firma"><div>Data</div><div>Firma</div></div></div>'
       + '</div>';
